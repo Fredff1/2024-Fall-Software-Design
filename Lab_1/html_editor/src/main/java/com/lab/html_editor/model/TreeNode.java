@@ -6,22 +6,18 @@ import java.util.List;
 
 
 public abstract class TreeNode {
-    private String name;
     private String id;
     private List<TreeNode> children;
     /**
      * 通用的文本树节点
      */
-    public TreeNode(String name,String id){
-        this.name=name;
+    public TreeNode(String id){
+
         this.id=id;
         this.children=new ArrayList<>();
     }
 
-    public String getName(){
-        return this.name;
-    }
-    
+
     public String getId(){
         return this.id;
     }
@@ -74,7 +70,7 @@ public abstract class TreeNode {
     }
 
     // 抽象方法：生成节点的字符串表示（例如，生成 HTML 或文件树的表示）
-    public abstract String toStringRepresentation();
+    public abstract String toStringRepresentation(int indentLevel);
 
     
 

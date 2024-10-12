@@ -1,7 +1,7 @@
 package com.lab.html_editor.strategy;
 
-import com.lab.html_editor.model.HtmlElement;
+import com.lab.html_editor.model.htmlElement.HtmlElement;
 
 public interface HtmlRepresentationStrategy {
-    String toStringRepresentation(HtmlElement element,int indent);
+    String toStringRepresentation(HtmlElement element,int indentLevel);
 }
