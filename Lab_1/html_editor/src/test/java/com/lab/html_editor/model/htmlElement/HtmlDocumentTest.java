@@ -40,6 +40,9 @@ public class HtmlDocumentTest {
         document.append("ul", "list_1", "body", "This is a list");
         document.append("li", "li_it1", "list_1", "first");
         document.append("li", "li_it2", "list_1", "second");
+        document.append("div", "div_1", "body", "this is a div");
+        document.append("p", "p_2", "div_1", "Last updated: 2024-01-01");
+        document.append("p", "p_3", "div_1", "Copyright © 2021 MyWebpage.com");
         System.out.println(document.toHtmlString(0));
     }
 }

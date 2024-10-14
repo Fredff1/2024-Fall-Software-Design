@@ -23,5 +23,9 @@ public interface HtmlElement {
 
     public void setRepresentationStrategy(HtmlRepresentationStrategy strategy);
 
+    public void setId(String id);
+
+    public String getId();
+
     public HtmlRepresentationStrategy getRepresentationStrategy();
 }

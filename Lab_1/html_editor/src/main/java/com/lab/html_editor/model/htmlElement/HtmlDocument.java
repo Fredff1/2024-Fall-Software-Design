@@ -2,27 +2,29 @@ package com.lab.html_editor.model.htmlElement;
 
 import com.lab.html_editor.factory.html_factory.BasicHtmlFactory;
 import com.lab.html_editor.model.TreeNode;
+import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlBody;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlHead;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlTitle;
+import com.lab.html_editor.service.HtmlElementService;
 
 
 public class HtmlDocument {
     private HtmlComposite root;
     private String documentname;
-    private BasicHtmlFactory htmlElementFactory;
+    private HtmlElementService htmlElementService;
 
     public HtmlDocument(String documentName,String title){
-        this.htmlElementFactory=new BasicHtmlFactory();
+        this.htmlElementService=new HtmlElementService();
         this.documentname=documentName;
         // 初始化四个必定有的标签
-        this.root=htmlElementFactory.createHtmlTop();
-        HtmlHead head=htmlElementFactory.createHead();
-        HtmlTitle docu_title=htmlElementFactory.createTitle(title);
+        this.root=(HtmlComposite)htmlElementService.createElement("html","html");
+        
+        HtmlHead head=(HtmlHead)htmlElementService.createElement("head", "head");
+        HtmlTitle docu_title=(HtmlTitle)htmlElementService.createElement("title", "title",title);
+        HtmlBody body=(HtmlBody)htmlElementService.createElement("body", "vody");
         head.addChild(docu_title);
         this.root.addChild(head);
-        this.root.addChild(
-            htmlElementFactory.createBody()
-        );
+        this.root.addChild(body);
 
         
     }
@@ -40,10 +42,9 @@ public class HtmlDocument {
     }
 
     public boolean append(String sourcetagNameString,String sourceId,String parentId,String sourceTextContent){
-        HtmlTagName sourceTagName=HtmlTagName.fromString(sourcetagNameString);
         TreeNode sourceHtmlElement=null;
         try{
-            sourceHtmlElement=htmlElementFactory.createComponent(sourceId,sourceTagName,sourceTextContent);
+            sourceHtmlElement=(TreeNode)htmlElementService.createElement(sourcetagNameString,sourceId,sourceTextContent);
         }catch(IllegalArgumentException e){
             return false;
         }
@@ -57,10 +58,9 @@ public class HtmlDocument {
     }   
 
     public boolean insert(String sourcetagNameString,String sourceId,String brotherId,String sourceTextContent){
-        HtmlTagName sourceTagName=HtmlTagName.fromString(sourcetagNameString);
         TreeNode sourceHtmlElement=null;
         try{
-            sourceHtmlElement=htmlElementFactory.createComponent(sourceId,sourceTagName,sourceTextContent);
+            sourceHtmlElement=(TreeNode)htmlElementService.createElement(sourcetagNameString,sourceId,sourceTextContent);
         }catch(IllegalArgumentException e){
             return false;
         }

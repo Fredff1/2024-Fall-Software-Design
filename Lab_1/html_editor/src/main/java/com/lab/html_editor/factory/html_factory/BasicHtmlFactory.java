@@ -7,19 +7,22 @@ import java.util.Map;
 
 import com.lab.html_editor.factory.TreeNodeFactory;
 import com.lab.html_editor.model.TreeNode;
+import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlElement;
+import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.HtmlTagName;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.*;
+import com.lab.html_editor.service.IDManager;
 
 
 public class BasicHtmlFactory implements TreeNodeFactory{
 
-    private Map<String, HtmlElement> elementMap;
 
+    
 
 
     public BasicHtmlFactory(){
-        this.elementMap=new HashMap<>();
+
     }
 
    /**
@@ -31,16 +34,7 @@ public class BasicHtmlFactory implements TreeNodeFactory{
      */
     
 
-    private boolean validateId(String id,String exceptionMsg) {
-        if(exceptionMsg==null){
-            exceptionMsg="Cannot create element. ID '" + id + "' is invalid or already exists.";
-        }
-        var flag=!elementMap.containsKey(id); 
-        if(!flag){
-            throw new IllegalArgumentException(exceptionMsg);
-        } 
-        return flag; // 使用Map检查ID是否唯一
-    }
+   
 
 
    
@@ -56,6 +50,20 @@ public class BasicHtmlFactory implements TreeNodeFactory{
     
 
     
+
+    public void editElementText(HtmlElement element,String new_text){
+        if(new_text==null){
+            new_text="";
+        }
+
+        if(element instanceof HtmlComposite){
+            ((HtmlComposite)element).setTextElement(createText(new_text));
+        }else if(element instanceof HtmlLeaf){
+            ((HtmlLeaf)element).setText(new_text);
+        }else{
+            throw new IllegalArgumentException("Invalid html element to eidt text");
+        }
+    }
 
 
     @Override
@@ -94,26 +102,26 @@ public class BasicHtmlFactory implements TreeNodeFactory{
     }
 
     public TreeNode createCustomComposite(String id,String... args){
-        validateId(id,null);
+
         var tagNameString=ifTextExsist(args);
         String text=null;
         if(args.length>1){
             text=args[1];
         }
-        TreeNode new_element=null;
+        HtmlCustomComposite new_element=null;
         if(text!=null){
             new_element=new HtmlCustomComposite(id, tagNameString,createText(text));
         }else{
             new_element=new HtmlCustomComposite(id, tagNameString);
         }
-        if(new_element instanceof HtmlElement){
-            elementMap.put(id, (HtmlElement)new_element);
-        }
+
         return new_element;
+
+        
     }
 
     public HtmlListItem createListItem(String id,String... args){
-        validateId(id,null);
+
         var text=ifTextExsist(args);
         HtmlListItem new_element=null;
         if(text!=null){
@@ -121,12 +129,12 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlListItem(id);
         }
-        elementMap.put(id, new_element);
         return new_element;
+
     }
 
     public HtmlUnorderedList createUnorderedList(String id,String... args){
-        validateId(id,null);
+
         var text=ifTextExsist(args);
         HtmlUnorderedList new_element=null;
         if(text!=null){
@@ -134,12 +142,12 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlUnorderedList(id);
         }
-        elementMap.put(id, new_element);
+
         return new_element;
     }
 
     public HtmlSubtitle createSubtitle(String id,HtmlTagName tagName,String... args){
-        validateId(id,null);
+
         HtmlSubtitle new_element=null;
         var text=ifTextExsist(args);
         if(text!=null){
@@ -147,13 +155,13 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlSubtitle(id, tagName);
         }
-        elementMap.put(id, new_element);
+
         return new_element;
     }
 
     
     public HtmlAnchor createAnchor(String id,String... args){
-        validateId(id,null);
+
         var text=ifTextExsist(args);
         HtmlAnchor new_element=null;
         if(text!=null){
@@ -161,13 +169,13 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlAnchor(id);
         }
-        elementMap.put(id, new_element);
+
         return new_element;
     }
 
     
     public HtmlDiv createDiv(String id,String... args){
-        validateId(id,null);
+
         var text=ifTextExsist(args);
         HtmlDiv new_element=null;
         if(text!=null){
@@ -175,13 +183,13 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlDiv(id);
         }
-        elementMap.put(id, new_element);
+
         return new_element;
     }
 
     
     public HtmlParagraph createParagraph(String id,String... args){
-        validateId(id,null);
+
         var text=ifTextExsist(args);
         HtmlParagraph new_element=null;
         if(text!=null){
@@ -189,7 +197,7 @@ public class BasicHtmlFactory implements TreeNodeFactory{
         }else{
             new_element=new HtmlParagraph(id);
         }
-        elementMap.put(id, new_element);
+
         return new_element;
     }
 
@@ -197,7 +205,6 @@ public class BasicHtmlFactory implements TreeNodeFactory{
 
     
     public HtmlSpan createSpan(String id,String... args){
-        validateId(id,null);
         var text=ifTextExsist(args);
         HtmlSpan new_element= null;
         if(text!=null){
@@ -206,7 +213,6 @@ public class BasicHtmlFactory implements TreeNodeFactory{
             new_element=new HtmlSpan(id);
             return new_element;
         }
-        elementMap.put(id, new_element);
         return new_element;
     }
 
@@ -230,21 +236,19 @@ public class BasicHtmlFactory implements TreeNodeFactory{
     
     public HtmlTop createHtmlTop(){
         var new_element=new HtmlTop();
-        elementMap.put("html", new_element);
         return new_element;
     }
 
     
     public HtmlBody createBody(){
         var new_element=new HtmlBody();
-        elementMap.put("default", new_element);
         return new_element;
+
     }
 
     
     public HtmlHead createHead(){
         var new_element=new HtmlHead();
-        elementMap.put("head", new_element);
         return new_element;
     }
 
@@ -255,7 +259,6 @@ public class BasicHtmlFactory implements TreeNodeFactory{
             throw new IllegalArgumentException("Empty title is not permitted");
         }
         var new_element=new HtmlTitle(titleText);
-        elementMap.put("title", new_element);
         return new_element;
     }
     

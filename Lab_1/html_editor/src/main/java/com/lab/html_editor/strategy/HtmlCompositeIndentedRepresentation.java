@@ -66,8 +66,11 @@ public class HtmlCompositeIndentedRepresentation implements HtmlRepresentationSt
                             has_change_line=true;
                         }
 
-                        sb.append(((HtmlComposite) child).toStringRepresentation( indentLevel + 1));
-                        sb.append(indent);  // 缩进结束标签与开始标签对齐
+                        sb.append(((HtmlComposite) child).toStringRepresentation(indentLevel + 1));
+                        if(i==chileren.size()-1){
+                            sb.append(indent);  // 缩进结束标签与开始标签对齐
+                        }
+                        
                     }
                 }
                 if(chileren.size()>1|| !(chileren.get(0) instanceof HtmlText)){
