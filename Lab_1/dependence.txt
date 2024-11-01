@@ -1,0 +1,12 @@
+@startuml
+skinparam packageStyle rectangle
+
+package "Project" {
+    [ModuleA] --> [ModuleB] : depends on
+    [ModuleA] --> [ModuleC] : depends on
+    [ModuleB] --> [ModuleD] : depends on
+    [ModuleC] --> [ModuleD] : depends on
+    [ModuleE] ..> [ModuleA] : uses
+}
+
+@enduml
