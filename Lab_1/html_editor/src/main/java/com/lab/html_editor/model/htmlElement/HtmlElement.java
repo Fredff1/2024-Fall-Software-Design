@@ -18,7 +18,7 @@ import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitable;
 public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     private String id;
     private HtmlTagName tagName;
-    private List<SpellCheckError> spellCheckErrors=new ArrayList<>();
+    
     private TreeComposite father;
     private HtmlRepresentationStrategy representationStrategy=new HtmlIndentedRepresentation();
     private final List<HtmlAttribute> attributes=new ArrayList<>();
@@ -145,25 +145,15 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
         return this.representationStrategy.toStringRepresentation(this, indentLevel);
     }
 
-    public List<SpellCheckError> getSpellCheckErrors(){
-        return this.spellCheckErrors;
-    }
+    public abstract List<SpellCheckError> getSpellCheckErrors();
 
     /**
      * 得到是否有拼写错误
      * @return
      */
-    public boolean hasSpellCheckErrors(){
-        if(spellCheckErrors.isEmpty()){
-            return false;
-        }else{
-            return true;
-        }
-    }
+    public abstract boolean hasSpellCheckErrors();
 
-    public void setSpellCheckErrors(List<SpellCheckError> errors){
-        this.spellCheckErrors=errors;
-    }
+    public abstract void setSpellCheckErrors(List<SpellCheckError> errors);
 }
 
 

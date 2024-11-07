@@ -3,6 +3,7 @@ package com.lab.html_editor.utils.command;
 
 
 import com.lab.html_editor.controller.HtmlController;
+import com.lab.html_editor.controller.HtmlDocumentManager;
 import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
@@ -10,6 +11,7 @@ import com.lab.html_editor.utils.strategy.HtmlTreeRepresentation;
 
 public class ConsoleHtmlWriteFileCommand implements ConsoleCommand{
     private final HtmlController controller;
+    private final HtmlDocumentManager manager;
     private final String filePath;
     private final HtmlDocument document;
 
@@ -17,7 +19,8 @@ public class ConsoleHtmlWriteFileCommand implements ConsoleCommand{
     public ConsoleHtmlWriteFileCommand(HtmlController controller,String filePath){
         this.controller=controller;
         this.filePath=filePath;
-        this.document=controller.getActivDocument();
+        this.manager=controller.getDocumentManager();
+        this.document=controller.getActiveDocument();
     }
 
     @Override
@@ -26,7 +29,7 @@ public class ConsoleHtmlWriteFileCommand implements ConsoleCommand{
             var prevStrategy=document.getRepresentationStrategy();
             document.setRepresentationStrategy(new HtmlIndentedRepresentation());
             controller.getIOManager().write(document,filePath);
-            controller.getActivDocument().notifyObservers(new StatusEvent("Successfully write document to file", true));
+            controller.getActiveDocument().notifyObservers(new StatusEvent("Successfully write document to file", true));
             document.setRepresentationStrategy(prevStrategy);
             return true;
         }catch(Exception e){

@@ -287,6 +287,10 @@ public class HtmlDocument implements Observable {
         htmlElementService.visitElement("html", visitor);
     }
 
+    public void visitElement(HtmlVisitor visitor,String id){
+        htmlElementService.visitElement(id, visitor);
+    }
+
     public void addObserver(Observer observer) {
         observers.add(observer);
     }

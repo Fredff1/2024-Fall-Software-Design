@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.lab.html_editor.controller.HtmlController;
 import com.lab.html_editor.model.exceptions.HtmlAppendExcption;
 import com.lab.html_editor.model.exceptions.HtmlDeleteException;
+import com.lab.html_editor.model.exceptions.HtmlEditFailException;
 import com.lab.html_editor.model.exceptions.HtmlServiceSearchException;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.HtmlService;
@@ -22,13 +23,13 @@ public class testCommand {
 
     @Before
     public void setUp() {
-        controller.addDocument(document);
+        controller.getDocumentManager().addDocumentSession(document);
     }
 
     @Test
     public void testBasicCommands() {
-        ConsoleHtmlAppendCommand appendCommand = new ConsoleHtmlAppendCommand(document, "li", "li_1", "body", "li 1");
-        ConsoleHtmlInsertCommand insertCommand = new ConsoleHtmlInsertCommand(document, "li", "li_2", "li_1", "li 2");
+        ConsoleHtmlAppendCommand appendCommand = new ConsoleHtmlAppendCommand(controller, "li", "li_1", "body", "li 1");
+        ConsoleHtmlInsertCommand insertCommand = new ConsoleHtmlInsertCommand(controller, "li", "li_2", "li_1", "li 2");
         ConsoleHtmlDeleteCommand deleteCommand = new ConsoleHtmlDeleteCommand(document, "li_1");
         manager.executeCommand(appendCommand);
         assert (document.search("li_1").getText().equals("li 1"));
@@ -51,13 +52,13 @@ public class testCommand {
         assert (manager.executeCommand(printIndentCommand));
         ConsoleHtmlPrintTreeCommand printTreeCommand = new ConsoleHtmlPrintTreeCommand(document);
         assert (manager.executeCommand(printTreeCommand));
-        ConsoleHtmlInitCommand initCommand = new ConsoleHtmlInitCommand(controller, "a", "a");
+        ConsoleHtmlInitCommand initCommand = new ConsoleHtmlInitCommand(controller.getDocumentManager(), "a", "a");
         manager.executeCommand(initCommand);
-        assert (controller.getActivDocument().getDocumentName().equals("a"));
+        assert (controller.getActiveDocument().getDocumentName().equals("a"));
         ConsoleHtmlReadFileCommand readFileCommand = new ConsoleHtmlReadFileCommand(controller,
-                "1.txt");
+                "3.txt");
         manager.executeCommand(readFileCommand);
-        assert (controller.getActivDocument().getDocumentName().equals("1.txt"));
+        assert (controller.getActiveDocument().getDocumentName().equals("3.txt"));
         ConsoleHtmlSpellCheckCommand appCheckCommand = new ConsoleHtmlSpellCheckCommand(document,
                 new SpellCheckService());
         assert (manager.executeCommand(appCheckCommand));
@@ -66,7 +67,7 @@ public class testCommand {
 
     @Test
     public void testUndoRedo() {
-        ConsoleHtmlAppendCommand appendCommand = new ConsoleHtmlAppendCommand(document, "li", "li_1", "body", "li 1");
+        ConsoleHtmlAppendCommand appendCommand = new ConsoleHtmlAppendCommand(controller, "li", "li_1", "body", "li 1");
         ConsoleHtmlEditContentCommand editContentCommand = new ConsoleHtmlEditContentCommand(document, "li_1",
                 "Updated li 1",new SpellCheckService());
 
@@ -176,7 +177,7 @@ public class testCommand {
     @Test
     public void testEditContentWithNonExistentElement() {
         // 尝试编辑不存在元素的内容
-        assertThrows(HtmlServiceSearchException.class, () -> {
+        assertThrows(HtmlEditFailException.class, () -> {
             document.editContent("nonexistentId", "New content");
         });
     }

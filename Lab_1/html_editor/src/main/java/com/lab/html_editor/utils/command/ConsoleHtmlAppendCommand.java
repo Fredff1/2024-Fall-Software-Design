@@ -1,11 +1,14 @@
 package com.lab.html_editor.utils.command;
 
+import com.lab.html_editor.controller.HtmlController;
 import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.model.exceptions.HtmlAppendExcption;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.model.htmlElement.HtmlElement;
+import com.lab.html_editor.utils.visitor.html_visitor.HtmlElementSpellCheckVisitor;
 
 public class ConsoleHtmlAppendCommand implements ConsoleCommand{
+    private final HtmlController controller;
     private final HtmlDocument document;
     private final String parentId;
     private final String tagName;
@@ -17,8 +20,9 @@ public class ConsoleHtmlAppendCommand implements ConsoleCommand{
 
 
 
-    public ConsoleHtmlAppendCommand(HtmlDocument document,String tagName,String targetId,String parentId,String content){
-        this.document=document;
+    public ConsoleHtmlAppendCommand(HtmlController controller,String tagName,String targetId,String parentId,String content){
+        this.controller=controller;
+        this.document=controller.getActiveDocument();
         this.parentId=parentId;
         this.tagName=tagName;
         this.targetId=targetId;
@@ -31,6 +35,8 @@ public class ConsoleHtmlAppendCommand implements ConsoleCommand{
             document.append(tagName, targetId, parentId, content);
             this.insertLocation=document.getElementIndex(targetId);
             this.appendElement=document.search(targetId);
+            HtmlElementSpellCheckVisitor spellCheckVisitor=new HtmlElementSpellCheckVisitor(controller.getSpellCheckService(),false);
+            appendElement.accept(spellCheckVisitor);
             document.notifyObservers(new StatusEvent("Successfully append element to "+parentId, true));
             return true;
         }

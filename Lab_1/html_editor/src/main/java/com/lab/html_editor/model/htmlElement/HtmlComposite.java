@@ -9,6 +9,7 @@ import com.lab.html_editor.model.TreeNode;
 import com.lab.html_editor.model.exceptions.HtmlChildOperationFailException;
 
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
+import com.lab.html_editor.service.spellcheck.SpellCheckError;
 import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
 import com.lab.html_editor.utils.strategy.HtmlRepresentationStrategy;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitor;
@@ -169,7 +170,7 @@ public class HtmlComposite extends HtmlElement implements TreeComposite {
      * 得到对应子对象在列表中的index方便insert操作，若不是子对象，返回-1
      * 
      * @param target
-     * @return 子对象的索引 不存在则为-1
+     * @return 子对象的索引 不存在则跑出异常
      */
     public int getChildIndex(TreeNode target) throws HtmlChildOperationFailException {
         for (int i = 0; i < children.size(); i++) {
@@ -232,7 +233,40 @@ public class HtmlComposite extends HtmlElement implements TreeComposite {
         }
     }
 
-    
+    @Override
+    public List<SpellCheckError> getSpellCheckErrors(){
+        HtmlText text=getTextElement();
+        if(text==null){
+            return new ArrayList<>();
+        }else{
+            return text.getSpellCheckErrors();
+        }
+    }
+
+    /**
+     * 得到是否有拼写错误
+     * @return
+     */
+    @Override
+    public boolean hasSpellCheckErrors(){
+        HtmlText text=getTextElement();
+        if(text==null){
+            return false;
+        }else{
+            return text.hasSpellCheckErrors();
+        }
+    }
+
+    @Override
+    public void setSpellCheckErrors(List<SpellCheckError> errors){
+        HtmlText text=getTextElement();
+        if(text==null){
+            return;
+        }else{
+            text.setSpellCheckErrors(errors);
+        }
+    }
+
     /**
      * 支持visitor
      */

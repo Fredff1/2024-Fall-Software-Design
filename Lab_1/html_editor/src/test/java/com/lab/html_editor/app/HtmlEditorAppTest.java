@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.lab.html_editor.controller.HtmlController;
+import com.lab.html_editor.controller.exceptions.UninitializedException;
 import com.lab.html_editor.model.exceptions.HtmlServiceSearchException;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 
@@ -26,13 +27,16 @@ public class HtmlEditorAppTest {
         assertNotNull(app.getController());
         assertNotNull(app.getParser());
         assertNotNull(app.getView());
-        assertNull(app.getController().getActivDocument());
+        assertThrows(UninitializedException.class, ()->{
+            assertNull(app.getController().getActiveDocument());
+        });
+        
     }
 
     @Test
     public void testNormalCommand(){
         app.simulateInput("init");
-        HtmlDocument document=controller.getActivDocument();
+        HtmlDocument document=controller.getActiveDocument();
         app.simulateInput("append li li_1 body Li 1");
         assert(document.search("li_1").getText().equals("Li 1"));
         app.simulateInput("insert li li_0 li_1 Li 0");
@@ -65,10 +69,10 @@ public class HtmlEditorAppTest {
         app.simulateInput("init");
         app.simulateInput("read 3.txt");
         app.simulateInput("edit-text body Body");
-        String text=app.getController().getActivDocument().toHtmlString(2);
+        String text=app.getController().getActiveDocument().toHtmlString(2);
         app.simulateInput("save 4.txt");
         app.simulateInput("read 4.txt");
-        String text_2=app.getController().getActivDocument().toHtmlString(2);
+        String text_2=app.getController().getActiveDocument().toHtmlString(2);
         assertEquals(text,text_2);
     }
 

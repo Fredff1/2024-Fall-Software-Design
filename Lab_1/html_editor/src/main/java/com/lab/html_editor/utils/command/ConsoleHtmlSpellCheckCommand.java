@@ -14,17 +14,31 @@ public class ConsoleHtmlSpellCheckCommand implements ConsoleCommand{
 
     private final HtmlDocument document;
     private final SpellCheckService spellCheckService;
+    private boolean visitChild=true;
+    private String targetId=null;
 
     public ConsoleHtmlSpellCheckCommand(HtmlDocument document,SpellCheckService spellCheckService){
         this.document=document;
         this.spellCheckService=spellCheckService;
     }
 
+    public ConsoleHtmlSpellCheckCommand(HtmlDocument document,SpellCheckService spellCheckService,boolean visitChild,String targetId){
+        this.document=document;
+        this.spellCheckService=spellCheckService;
+        this.visitChild=visitChild;
+        this.targetId=targetId;
+    }
+
     @Override
     public boolean execute(){
         try{
-            HtmlElementSpellCheckVisitor spellCheckVisitor=new HtmlElementSpellCheckVisitor(spellCheckService);
-            document.visitRoot(spellCheckVisitor);
+            HtmlElementSpellCheckVisitor spellCheckVisitor=new HtmlElementSpellCheckVisitor(spellCheckService,visitChild);
+            if(targetId==null){
+                document.visitRoot(spellCheckVisitor);
+            }else{
+                document.visitElement(spellCheckVisitor, targetId);
+            }
+            
             String concreteTexts=spellCheckVisitor.getErrorContents();
             if (concreteTexts.trim().isEmpty()) {
 

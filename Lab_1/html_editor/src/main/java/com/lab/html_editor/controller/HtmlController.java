@@ -17,34 +17,25 @@ import java.util.*;
  * MVC核心组件，负责命令的执行、
  */
 public class HtmlController implements Observer{
-    private final ConsoleCommandManager commandManager;
     private final HtmlView view;
     private final HtmlIO ioManager=new JsoupHtmlIO();
     private final SpellCheckService spellCheckService;
-    private final Queue<Event> events=new LinkedList<>();
-    private final Map<String,HtmlDocument> documentMap=new HashMap<>();
-    private HtmlDocument activeDocument;
+    private final HtmlDocumentManager documentManager=new HtmlDocumentManager(this);
 
     
 
    
-    public HtmlController(HtmlDocument document, HtmlView view,ConsoleCommandManager consoleCommandManager,SpellCheckService spellCheckService) {
-        this.activeDocument = document;
+    public HtmlController(HtmlDocument document, HtmlView view,SpellCheckService spellCheckService) {
         this.view = view;
         view.addObserver(this);
-        this.commandManager=consoleCommandManager;
         this.spellCheckService=spellCheckService;
-        commandManager.addObserver(this);
-        commandManager.setInit(true);
+        this.documentManager.addDocumentSession(document);
     }
 
     public HtmlController(HtmlView view,ConsoleCommandManager consoleCommandManager,SpellCheckService spellCheckService ){
-        this.activeDocument=null;
         this.view = view;
         view.addObserver(this);
-        this.commandManager=consoleCommandManager;
         this.spellCheckService=spellCheckService;
-        commandManager.addObserver(this);;
     }
 
     /**
@@ -64,99 +55,100 @@ public class HtmlController implements Observer{
         return this.ioManager;
     }
 
-    public void addDocument(HtmlDocument document){
-        document.addObserver(this);
-        documentMap.put(document.getDocumentName(), document);
-        setActiveDocument(document.getDocumentName());
+    public HtmlDocumentManager getDocumentManager(){
+        return documentManager;
     }
 
-    public void setActiveDocument(String documentName){
-        this.activeDocument=documentMap.get(documentName);
-        view.setActiveDocument(activeDocument);
+    public SpellCheckService getSpellCheckService(){
+        return spellCheckService;
     }
 
-    public HtmlDocument getActivDocument(){
-        return this.activeDocument;
-    }
+    
     
     /* 一系列具体的命令*/
 
     public void initCommand(String documentName,String title){
-        ConsoleCommand initCommand= new ConsoleHtmlInitCommand(this, documentName, title);
-        commandManager.executeCommand(initCommand);
+        ConsoleHtmlInitCommand initCommand= new ConsoleHtmlInitCommand(documentManager, documentName, title);
+        documentManager.getdefaultCommandManager().executeCommand(initCommand);
     }
 
     public void editElementId(String oldId, String newId) {
-        ConsoleCommand editCommand = new ConsoleHtmlEditIdCommand(activeDocument, oldId, newId);
-        commandManager.executeCommand(editCommand);
+        ConsoleCommand editCommand = new ConsoleHtmlEditIdCommand(documentManager.getActiveDocument(), oldId, newId);
+        documentManager.getActiveSession().execute(editCommand);
     }
 
     public void editElementText(String targetId,String text){
-        ConsoleCommand editTextCommand= new ConsoleHtmlEditContentCommand(activeDocument, targetId, text,spellCheckService);
-        commandManager.executeCommand(editTextCommand);
+        ConsoleCommand editTextCommand= new ConsoleHtmlEditContentCommand(documentManager.getActiveDocument(), targetId, text,spellCheckService);
+        documentManager.getActiveSession().execute(editTextCommand);
     }
 
     public void insertElement(String tagName,String targetId,String brotherId,String content){
-        ConsoleCommand insertCommand= new ConsoleHtmlInsertCommand(activeDocument,  tagName, targetId, brotherId,content);
-        commandManager.executeCommand(insertCommand);;
+        ConsoleCommand insertCommand= new ConsoleHtmlInsertCommand(this,  tagName, targetId, brotherId,content);
+        documentManager.getActiveSession().execute(insertCommand);
+        
     }
 
     public void deleteElement(String targetId){
-        ConsoleCommand deleteCommand = new ConsoleHtmlDeleteCommand(activeDocument, targetId);
-        commandManager.executeCommand(deleteCommand);
+        ConsoleCommand deleteCommand = new ConsoleHtmlDeleteCommand(documentManager.getActiveDocument(), targetId);
+        documentManager.getActiveSession().execute(deleteCommand);
     }
 
     public void appendElement(String tagName,String targetId,String parentId,String content){
-        ConsoleCommand appendCommand = new ConsoleHtmlAppendCommand(activeDocument,tagName, targetId,parentId, content);
-        commandManager.executeCommand(appendCommand);
+        ConsoleCommand appendCommand = new ConsoleHtmlAppendCommand(this,tagName, targetId,parentId, content);
+        documentManager.getActiveSession().execute(appendCommand);
+       
     }
 
     public void readFile(String filePath){
         ConsoleCommand readCommand= new ConsoleHtmlReadFileCommand(this, filePath);
-        commandManager.executeCommand(readCommand);
+        documentManager.getdefaultCommandManager().executeCommand(readCommand);
     }
 
     public void writeFile(String filePath){
         ConsoleCommand writeCommand= new ConsoleHtmlWriteFileCommand(this, filePath);
-        commandManager.executeCommand(writeCommand);
+        documentManager.getActiveSession().execute(writeCommand);
     }
 
     public void printCommandForTest(){
-        var visitor=activeDocument.getRenderInfo();
+        var visitor=documentManager.getActiveSession().getDocument().getRenderInfo();
         System.out.println(visitor.geStringRepresentation());
     }
 
     // 处理撤销请求
     public void undoLastCommand() {
-        commandManager.undo();
+        documentManager.getActiveCommandManager().undo();
     }
 
     // 处理重做请求
     public void redoLastCommand() {
-        commandManager.redo();
+        documentManager.getActiveCommandManager().redo();
     }
 
     public void spellCheck(){
-        ConsoleHtmlSpellCheckCommand command=new ConsoleHtmlSpellCheckCommand(activeDocument, spellCheckService);
-        commandManager.executeCommand(command);
+        ConsoleHtmlSpellCheckCommand command=new ConsoleHtmlSpellCheckCommand(documentManager.getActiveDocument(), spellCheckService);
+        documentManager.getActiveSession().execute(command);
     }
 
     public void printTree(){
-        ConsoleHtmlPrintTreeCommand printCommand=new ConsoleHtmlPrintTreeCommand(activeDocument);
-        commandManager.executeCommand(printCommand);
+        ConsoleHtmlPrintTreeCommand printCommand=new ConsoleHtmlPrintTreeCommand(documentManager.getActiveDocument());
+        documentManager.getActiveSession().execute(printCommand);
     }
 
     public void printIndent(int indent){
-        ConsoleHtmlPrintIndentCommand printCommand=new ConsoleHtmlPrintIndentCommand(activeDocument,view,indent);
-        commandManager.executeCommand(printCommand);
+        ConsoleHtmlPrintIndentCommand printCommand=new ConsoleHtmlPrintIndentCommand(documentManager.getActiveDocument(),view,indent);
+        documentManager.getActiveSession().execute(printCommand);
+    }
+
+    public HtmlDocument getActiveDocument(){
+        return documentManager.getActiveDocument();
     }
 
 
     private void handleStatusEvent(StatusEvent event){
         boolean isSuccessful=event.isSuccessful();
         String message=event.getMessage();
-        events.add(event);
-        view.updateView(activeDocument);
+        documentManager.getActiveSession().getAllEvents().add(event);
+        view.updateView(documentManager.getActiveSession().getDocument());
         if(isSuccessful){
             view.displayMessage(message);
         }else{
@@ -167,34 +159,9 @@ public class HtmlController implements Observer{
     }
 
     public boolean hasActiveDocument(){
-        return this.activeDocument!=null;
+        return documentManager.hasActiveDocument();
     }
 
-    /*可以对历史的event进行处理 */
-
-    public Queue<Event> getAllEvents(){
-        return events;
-    }
-
-    public Event getLastEvent(){
-        return events.peek();
-    }
-
-    public void clearEvents(){
-        events.clear();
-    }
-
-    public StatusEvent getLastStatusEvent(){
-        Event lastStatusEvent = null;
-        for (Event event : events) {
-            if (event instanceof StatusEvent) {
-                lastStatusEvent = (StatusEvent) event;
-            }
-        }
-        return (StatusEvent) lastStatusEvent;
-    }
-
-    
 
     public void handleUnknownCommand(String command,Set<String> commandKeys){
         view.displayMessage("Unknown command: " + command);

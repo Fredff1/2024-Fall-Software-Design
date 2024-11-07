@@ -19,7 +19,7 @@ public class ConsoleCommandManager implements Observable{
     private final Stack<ConsoleCommand> undoStack = new Stack<>();
     private final Stack<ConsoleCommand> redoStack = new Stack<>();
     private final List<Observer> observers=new ArrayList<>();
-    private boolean initialized=false;
+    private boolean initialized=true;
 
 
     public boolean executeCommand(ConsoleCommand command) {

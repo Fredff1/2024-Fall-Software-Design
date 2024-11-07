@@ -1,12 +1,14 @@
 package com.lab.html_editor.utils.command;
 
 import com.lab.html_editor.controller.HtmlController;
+import com.lab.html_editor.controller.HtmlDocumentManager;
 import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.HtmlService;
 
 public class ConsoleHtmlReadFileCommand implements ConsoleCommand{
     private final HtmlController controller;
+    private HtmlDocumentManager manager;
     private final String filePath;
     private HtmlDocument currentDocument;
     private HtmlDocument previousDocument;
@@ -14,7 +16,11 @@ public class ConsoleHtmlReadFileCommand implements ConsoleCommand{
     public ConsoleHtmlReadFileCommand(HtmlController controller,String filePath){
         this.controller=controller;
         this.filePath=filePath;
-        this.previousDocument=controller.getActivDocument();
+        this.manager=controller.getDocumentManager();
+        if(controller.hasActiveDocument()){
+            this.previousDocument=controller.getActiveDocument();
+        }
+        
     }
 
     @Override
@@ -22,8 +28,8 @@ public class ConsoleHtmlReadFileCommand implements ConsoleCommand{
         try{
             HtmlDocument document=controller.getIOManager().read(filePath,new HtmlService());
             this.currentDocument=document;
-            controller.addDocument(document);
-            controller.setActiveDocument(document.getDocumentName());
+            manager.addDocumentSession(document);
+            manager.setActiveSession(document.getDocumentName());
             document.notifyObservers(new StatusEvent("Successfully read document from "+filePath, true));
             return true;
         }catch(Exception e){
@@ -37,7 +43,7 @@ public class ConsoleHtmlReadFileCommand implements ConsoleCommand{
     @Override
     public boolean undo(){
         try{
-            controller.setActiveDocument(previousDocument.getDocumentName());
+            manager.setActiveSession(previousDocument.getDocumentName());
             previousDocument.notifyObservers(new StatusEvent("Successfully undo", true));
             return true;
         }catch(Exception e){
@@ -50,7 +56,7 @@ public class ConsoleHtmlReadFileCommand implements ConsoleCommand{
     @Override 
     public boolean redo(){
         try{
-            controller.setActiveDocument(currentDocument.getDocumentName());
+            manager.setActiveSession(currentDocument.getDocumentName());
             currentDocument.notifyObservers(new StatusEvent("Successfully redo init document", true));
             return true;
         }catch(Exception e){

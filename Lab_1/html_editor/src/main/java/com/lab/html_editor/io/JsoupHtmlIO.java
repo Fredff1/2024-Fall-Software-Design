@@ -37,7 +37,7 @@ public class JsoupHtmlIO implements HtmlIO {
         String body_text=body.ownText();
         Elements children = body.children();
         if (body != null) {
-            if(body_text!=null){
+            if(body_text!=null&&body_text!=""){
                 htmlDocument.editContent("body", body_text);
             }
             HtmlComposite htmlBody=(HtmlComposite)htmlDocument.getRoot().findChild("body");

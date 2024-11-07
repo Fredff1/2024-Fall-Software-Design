@@ -21,17 +21,19 @@ import com.lab.html_editor.view.HtmlView;
 
 public class EventTest {
     private HtmlController controller;
+    private HtmlDocumentManager documentManager;
     StatusEvent event=null;
     @Before
     public void setUp(){
         controller=new HtmlController(new HtmlView(), new ConsoleCommandManager(), new SpellCheckService());
+        documentManager=controller.getDocumentManager();
         controller.initCommand("a", "");
     }
 
     @Test
     public void testNormalAppend(){
         controller.appendElement("li", "li_1", "body", " ");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -40,7 +42,7 @@ public class EventTest {
     public void testNormalInsert(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.insertElement("li", "li_2", "li_1", " ");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -49,7 +51,7 @@ public class EventTest {
     public void testNormalDelete(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.deleteElement("li_1");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -58,7 +60,7 @@ public class EventTest {
     public void testNormalEditId(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.editElementId("li_1", "li_2");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -67,7 +69,7 @@ public class EventTest {
     public void testNormalEditText(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.editElementText("li_1", "dsdsd");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -75,7 +77,7 @@ public class EventTest {
     @Test
     public void testNormalPrintIndent(){
         controller.printIndent(2);
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -83,7 +85,7 @@ public class EventTest {
     @Test
     public void testNormalPrintTree(){
         controller.printTree();
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -92,11 +94,11 @@ public class EventTest {
     public void testNormalUndoRedo(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.undoLastCommand();
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
         controller.redoLastCommand();
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertTrue(event.isSuccessful());
         assertNull(event.getException());
     }
@@ -104,7 +106,7 @@ public class EventTest {
     @Test
     public void testInvalidAppend(){
         controller.appendElement("li", "li_1", "boddy", " ");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof HtmlAppendExcption);
     }
@@ -112,7 +114,7 @@ public class EventTest {
     @Test
     public void testInvalidInsert(){
         controller.insertElement("li", "li_2", "li_1", " ");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof HtmlInsertException);
     }
@@ -120,7 +122,7 @@ public class EventTest {
     @Test
     public void testInvalidDelete(){
         controller.deleteElement("li_ddd1");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof HtmlDeleteException);
     }
@@ -129,7 +131,7 @@ public class EventTest {
     public void testInvalidEditId(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.editElementText("li_ss1", "dsdsd");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof HtmlEditFailException);
     }
@@ -138,20 +140,20 @@ public class EventTest {
     public void testInvalidEditText(){
         controller.appendElement("li", "li_1", "body", " ");
         controller.editElementText("li_ss1", "dsdsd");
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof HtmlEditFailException);
     }
 
     @Test
     public void testInvalidUndoRedo(){
-        controller.appendElement("li", "li_1", "bodsy", " ");
+        controller.appendElement("li", "li_1", "bosdy", " ");
         controller.undoLastCommand();
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof UndoFailedException);
         controller.redoLastCommand();
-        event=controller.getLastStatusEvent();
+        event=documentManager.getActiveSession().getLastStatusEvent();
         assertFalse(event.isSuccessful());
         assert(event.getException() instanceof RedoFailedException);
     }

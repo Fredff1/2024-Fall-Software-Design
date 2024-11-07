@@ -21,7 +21,7 @@ public class HtmlControllerTest {
 
     private void reInit(){
         this.document = new HtmlDocument("testController", "test",new HtmlService());
-        this.controller = new HtmlController(document, new HtmlView(),new ConsoleCommandManager(),new SpellCheckService());
+        this.controller = new HtmlController(document, new HtmlView(),new SpellCheckService());
         controller.appendElement("div", "div_1", "body", "this is a div");
     }
   
@@ -30,7 +30,7 @@ public class HtmlControllerTest {
     @Before
     public void setUp() {
         this.document = new HtmlDocument("testController", "test",new HtmlService());
-        this.controller = new HtmlController(document, new HtmlView(),new ConsoleCommandManager(),new SpellCheckService());
+        this.controller = new HtmlController(document, new HtmlView(),new SpellCheckService());
         controller.appendElement("h1", "sub_title_1", "body", "This is the title");
         controller.appendElement("p", "description", "body", "This is a paragraph");
         controller.appendElement("ul", "list_1", "body", "This is a list");
