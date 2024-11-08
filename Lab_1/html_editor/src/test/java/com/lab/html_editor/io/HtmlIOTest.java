@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.HtmlService;
+import com.lab.html_editor.service.io.HtmlIO;
+import com.lab.html_editor.service.io.JsoupHtmlIO;
 
 public class HtmlIOTest {
     private HtmlIO io;

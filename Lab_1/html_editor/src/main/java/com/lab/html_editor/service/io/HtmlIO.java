@@ -1,4 +1,4 @@
-package com.lab.html_editor.io;
+package com.lab.html_editor.service.io;
 
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.HtmlService;

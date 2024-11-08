@@ -2,9 +2,9 @@ package com.lab.html_editor.controller;
 
 import com.lab.html_editor.controller.events.Event;
 import com.lab.html_editor.controller.events.StatusEvent;
-import com.lab.html_editor.io.HtmlIO;
-import com.lab.html_editor.io.JsoupHtmlIO;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
+import com.lab.html_editor.service.io.HtmlIO;
+import com.lab.html_editor.service.io.JsoupHtmlIO;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
 import com.lab.html_editor.utils.command.*;
 import com.lab.html_editor.utils.observer.Observer;
