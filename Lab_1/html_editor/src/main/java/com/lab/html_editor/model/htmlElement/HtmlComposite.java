@@ -233,39 +233,7 @@ public class HtmlComposite extends HtmlElement implements TreeComposite {
         }
     }
 
-    @Override
-    public List<SpellCheckError> getSpellCheckErrors(){
-        HtmlText text=getTextElement();
-        if(text==null){
-            return new ArrayList<>();
-        }else{
-            return text.getSpellCheckErrors();
-        }
-    }
-
-    /**
-     * 得到是否有拼写错误
-     * @return
-     */
-    @Override
-    public boolean hasSpellCheckErrors(){
-        HtmlText text=getTextElement();
-        if(text==null){
-            return false;
-        }else{
-            return text.hasSpellCheckErrors();
-        }
-    }
-
-    @Override
-    public void setSpellCheckErrors(List<SpellCheckError> errors){
-        HtmlText text=getTextElement();
-        if(text==null){
-            return;
-        }else{
-            text.setSpellCheckErrors(errors);
-        }
-    }
+   
 
     /**
      * 支持visitor

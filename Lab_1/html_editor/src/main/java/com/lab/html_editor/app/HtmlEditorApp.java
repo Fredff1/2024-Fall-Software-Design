@@ -48,8 +48,7 @@ public class HtmlEditorApp {
                 try{
                     parser.parseCommand(commandLine); 
                 }catch(Exception e){
-                    view.displayMessage("A serious exception occurred: ");
-                    view.displayMessage(e.getMessage());
+                    view.displayMessage("Operation Failed because "+e.getMessage());
                 }
                 
             }

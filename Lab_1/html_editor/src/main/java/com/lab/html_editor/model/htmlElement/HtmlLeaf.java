@@ -13,7 +13,7 @@ import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitor;
 
 public abstract class HtmlLeaf extends HtmlElement implements TreeLeaf {
     private String text;
-    private List<SpellCheckError> spellCheckErrors=new ArrayList<>();
+    
 
     /*Leaf不包含文本节点，因而拥有单独的文本属性 */
     public HtmlLeaf(String id,String tagName){
@@ -28,21 +28,7 @@ public abstract class HtmlLeaf extends HtmlElement implements TreeLeaf {
       setRepresentationStrategy(new HtmlIndentedRepresentation());
     }
 
-    public List<SpellCheckError> getSpellCheckErrors(){
-        return this.spellCheckErrors;
-    }
-
-    public boolean hasSpellCheckErrors(){
-        if(spellCheckErrors.isEmpty()){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    public void setSpellCheckErrors(List<SpellCheckError> errors){
-        this.spellCheckErrors=errors;
-    }
+    
 
     public String getText(){
         return this.text;

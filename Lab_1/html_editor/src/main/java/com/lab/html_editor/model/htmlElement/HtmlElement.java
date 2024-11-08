@@ -8,12 +8,14 @@ import com.lab.html_editor.model.exceptions.HtmlAttributeOperationFailException;
 import com.lab.html_editor.model.TreeComposite;
 import com.lab.html_editor.model.htmlElement.HtmlAttributes.HtmlAttribute;
 import com.lab.html_editor.service.spellcheck.SpellCheckError;
+import com.lab.html_editor.utils.decorator.HtmlElementDecorator;
 import com.lab.html_editor.utils.factory.html_factory.BasicHtmlAttributeFactory;
 import com.lab.html_editor.utils.factory.html_factory.HtmlAttributeFactory;
 import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
 
 import com.lab.html_editor.utils.strategy.HtmlRepresentationStrategy;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitable;
+import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitor;
 
 public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     private String id;
@@ -23,7 +25,7 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     private HtmlRepresentationStrategy representationStrategy=new HtmlIndentedRepresentation();
     private final List<HtmlAttribute> attributes=new ArrayList<>();
     private final HtmlAttributeFactory attributeFactory=new BasicHtmlAttributeFactory();
-    
+    private final HtmlElementDecorator decorator=new HtmlElementDecorator(this);
     
     
 
@@ -39,6 +41,10 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     }
     public List<HtmlAttribute> getAttributes(){
         return attributes;
+    }
+
+    public HtmlElementDecorator getDecorator(){
+        return decorator;
     }
 
     /**
@@ -145,15 +151,11 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
         return this.representationStrategy.toStringRepresentation(this, indentLevel);
     }
 
-    public abstract List<SpellCheckError> getSpellCheckErrors();
+    
 
-    /**
-     * 得到是否有拼写错误
-     * @return
-     */
-    public abstract boolean hasSpellCheckErrors();
+    
 
-    public abstract void setSpellCheckErrors(List<SpellCheckError> errors);
+   
 }
 
 

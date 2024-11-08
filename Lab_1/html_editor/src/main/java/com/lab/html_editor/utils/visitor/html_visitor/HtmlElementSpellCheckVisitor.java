@@ -43,7 +43,7 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
             }catch(IOException e){
                 return;
             }
-            composite.setSpellCheckErrors(errors);
+            composite.getDecorator().setSpellCheckErrors(errors);
             if(errors.size()>0){
                 spellCheckErrorInfos.add(new SpellCheckErrorInfo(composite.getId(), errors));
             }
@@ -54,8 +54,6 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
                 child.accept(this);
             }
         }
-        
-       
     }
 
     @Override
@@ -72,7 +70,7 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
             }catch(IOException e){
                 return;
             }
-            leaf.setSpellCheckErrors(errors);
+            leaf.getDecorator().setSpellCheckErrors(errors);
             if(errors.size()>0){
                 spellCheckErrorInfos.add(new SpellCheckErrorInfo(leaf.getId(), errors));
             }
