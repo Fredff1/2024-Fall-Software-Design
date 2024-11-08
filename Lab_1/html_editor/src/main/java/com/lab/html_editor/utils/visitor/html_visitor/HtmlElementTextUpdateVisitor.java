@@ -27,7 +27,6 @@ public class HtmlElementTextUpdateVisitor implements HtmlVisitor {
     @Override
     public void visit(HtmlLeaf leaf) {
         leaf.setText(newContent.getText());
-        
     }
 
     

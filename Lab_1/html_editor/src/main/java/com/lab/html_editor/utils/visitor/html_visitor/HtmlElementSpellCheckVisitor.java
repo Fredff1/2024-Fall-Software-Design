@@ -6,6 +6,8 @@ import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 import com.lab.html_editor.service.spellcheck.SpellCheckError;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
+import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +29,7 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
     }
 
     public HtmlElementSpellCheckVisitor(SpellCheckService spellCheckService,boolean visitChild){
-        this.spellCheckService=spellCheckService;
-        this.spellCheckErrorInfos=new ArrayList<>();
+        this(spellCheckService);
         this.visitChild=visitChild;
     }
     
@@ -43,7 +44,8 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
             }catch(IOException e){
                 return;
             }
-            composite.getDecorator().setSpellCheckErrors(errors);
+            HtmlSpellCheckDecorator spellcheckDecorator=(HtmlSpellCheckDecorator)composite.getDecorator(DecoratorType.HTML_SPELLCHECK_DECORATOR);
+            spellcheckDecorator.setSpellCheckErrors(errors);
             if(errors.size()>0){
                 spellCheckErrorInfos.add(new SpellCheckErrorInfo(composite.getId(), errors));
             }
@@ -70,7 +72,8 @@ public class HtmlElementSpellCheckVisitor implements HtmlVisitor{
             }catch(IOException e){
                 return;
             }
-            leaf.getDecorator().setSpellCheckErrors(errors);
+            HtmlSpellCheckDecorator spellcheckDecorator=(HtmlSpellCheckDecorator)leaf.getDecorator(DecoratorType.HTML_SPELLCHECK_DECORATOR);
+            spellcheckDecorator.setSpellCheckErrors(errors);
             if(errors.size()>0){
                 spellCheckErrorInfos.add(new SpellCheckErrorInfo(leaf.getId(), errors));
             }

@@ -3,6 +3,8 @@ package com.lab.html_editor.utils.adapter;
 import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
+import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
 public class HtmlLeafAdapter extends HtmlElementAdapter implements TreeLeafAdapter{
     
@@ -28,7 +30,8 @@ public class HtmlLeafAdapter extends HtmlElementAdapter implements TreeLeafAdapt
             }
         }else{
             builder.append(leaf.getTagName().getTagString());
-            if(leaf.getDecorator().hasSpellCheckErrors()){
+            HtmlSpellCheckDecorator spellcheckDecorator=(HtmlSpellCheckDecorator)leaf.getDecorator(DecoratorType.HTML_SPELLCHECK_DECORATOR);
+            if(spellcheckDecorator.hasSpellCheckErrors()){
                 builder.append("[X]");
             }
             if(showId){

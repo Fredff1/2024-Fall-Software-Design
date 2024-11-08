@@ -7,28 +7,19 @@ import com.lab.html_editor.model.htmlElement.HtmlElement;
 import com.lab.html_editor.service.spellcheck.SpellCheckError;
 
 public class HtmlElementDecorator {
-    private HtmlElement element;
-    private List<SpellCheckError> spellCheckErrors=new ArrayList<>();
+    protected HtmlElement element;
+    protected DecoratorType type;
 
-    public HtmlElementDecorator(HtmlElement element){
+    public HtmlElementDecorator(HtmlElement element,DecoratorType type){
         this.element=element;
+        this.type=type;
     }
 
-    public List<SpellCheckError> getSpellCheckErrors(){
-        return this.spellCheckErrors;
+    public DecoratorType getType(){
+        return type;
     }
 
-    public boolean hasSpellCheckErrors(){
-        if(spellCheckErrors.isEmpty()){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    public void setSpellCheckErrors(List<SpellCheckError> errors){
-        this.spellCheckErrors=errors;
-    }
+    
 
     
 }

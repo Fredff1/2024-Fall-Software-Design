@@ -29,8 +29,8 @@ public class ConsoleHtmlWriteFileCommand implements ConsoleCommand{
             var prevStrategy=document.getRepresentationStrategy();
             document.setRepresentationStrategy(new HtmlIndentedRepresentation());
             controller.getIOManager().write(document,filePath);
-            controller.getActiveDocument().notifyObservers(new StatusEvent("Successfully write document to file", true));
             document.setRepresentationStrategy(prevStrategy);
+            controller.getActiveDocument().notifyObservers(new StatusEvent("Successfully write document to file", true));
             return true;
         }catch(Exception e){
             if(document==null){

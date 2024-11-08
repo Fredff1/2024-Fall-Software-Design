@@ -5,6 +5,8 @@ import com.lab.html_editor.model.TreeNode;
 import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
+import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
 import java.util.*;
 
@@ -22,7 +24,8 @@ public class HtmlCompositeAdapter extends HtmlElementAdapter implements TreeComp
         HtmlComposite composite=(HtmlComposite)node;
         StringBuilder builder=new StringBuilder();
         builder.append(composite.getTagName().getTagString());
-        if(composite.getDecorator().hasSpellCheckErrors()){
+        HtmlSpellCheckDecorator decorator=(HtmlSpellCheckDecorator)composite.getDecorator(DecoratorType.HTML_SPELLCHECK_DECORATOR);
+        if(decorator.hasSpellCheckErrors()){
             builder.append("[X]");
         }
         if(showId){

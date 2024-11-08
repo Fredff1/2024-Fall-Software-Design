@@ -1,14 +1,12 @@
 package com.lab.html_editor.model.htmlElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lab.html_editor.model.TreeNode;
 import com.lab.html_editor.model.exceptions.HtmlAttributeOperationFailException;
 import com.lab.html_editor.model.TreeComposite;
 import com.lab.html_editor.model.htmlElement.HtmlAttributes.HtmlAttribute;
 import com.lab.html_editor.service.spellcheck.SpellCheckError;
-import com.lab.html_editor.utils.decorator.HtmlElementDecorator;
+import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.*;
 import com.lab.html_editor.utils.factory.html_factory.BasicHtmlAttributeFactory;
 import com.lab.html_editor.utils.factory.html_factory.HtmlAttributeFactory;
 import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
@@ -16,6 +14,8 @@ import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
 import com.lab.html_editor.utils.strategy.HtmlRepresentationStrategy;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitable;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitor;
+
+import java.util.*;
 
 public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     private String id;
@@ -25,13 +25,14 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
     private HtmlRepresentationStrategy representationStrategy=new HtmlIndentedRepresentation();
     private final List<HtmlAttribute> attributes=new ArrayList<>();
     private final HtmlAttributeFactory attributeFactory=new BasicHtmlAttributeFactory();
-    private final HtmlElementDecorator decorator=new HtmlElementDecorator(this);
-    
+
+    private final Map<DecoratorType,HtmlElementDecorator> decorators=new HashMap<>();
     
 
      public HtmlElement(String id,String tagName){
         this.setId(id);
         this.tagName=new HtmlTagName(tagName);
+        addDecorator(new HtmlSpellCheckDecorator(this));
     }
 
    
@@ -43,8 +44,16 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
         return attributes;
     }
 
-    public HtmlElementDecorator getDecorator(){
-        return decorator;
+    public void addDecorator(HtmlElementDecorator decorator){
+        decorators.put(decorator.getType(), decorator);
+    }
+
+    public void removeDEcorator(DecoratorType type){
+        decorators.remove(type);
+    }
+
+    public HtmlElementDecorator getDecorator(DecoratorType type){
+        return decorators.get(type);
     }
 
     /**
