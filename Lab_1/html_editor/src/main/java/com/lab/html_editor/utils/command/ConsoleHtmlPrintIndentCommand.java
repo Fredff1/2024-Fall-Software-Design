@@ -21,7 +21,7 @@ public class ConsoleHtmlPrintIndentCommand implements ConsoleCommand{
     public boolean execute(){
         try{
             document.setRepresentationStrategy(new HtmlIndentedRepresentation());
-            view.setIndent(indent);
+            document.setIndent(indent);
             document.notifyObservers(new StatusEvent("Successfully converted to indented representation with indent "+indent, true));
             return true;
         }catch(Exception e){

@@ -13,16 +13,13 @@ import java.util.*;
 public class HtmlView implements Observable{
     private final List<Observer> observers;
     private HtmlDocument activDocument;
-    private int indent=2;
 
     public HtmlView(){
         this.observers=new ArrayList<>();
     }
 
 
-    public void setIndent(int indent){
-        this.indent=indent;
-    }
+   
 
     public void setActiveDocument(HtmlDocument document){
         this.activDocument=document;
@@ -54,7 +51,7 @@ public class HtmlView implements Observable{
     
     public void updateView(HtmlDocument document) {
         clearConsole();
-        var visitor = document.getRenderInfo(indent);
+        var visitor = document.getRenderInfo();
         String renderedContent = visitor.geStringRepresentation();
         displaySplitLine();
         System.out.println("Current Document Structure:");

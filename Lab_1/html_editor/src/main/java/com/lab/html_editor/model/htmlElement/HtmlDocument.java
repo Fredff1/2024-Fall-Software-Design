@@ -33,6 +33,7 @@ public class HtmlDocument implements Observable {
     private final Map<String,String[]> invalidDestination=new HashMap<>();
 
     private String documentname;
+    private int indent=2;
     
 
     public HtmlDocument(String documentName, String title,HtmlService service) {
@@ -226,7 +227,7 @@ public class HtmlDocument implements Observable {
      * @return
      */
     public HtmlElementRenderVisitor getRenderInfo() {
-        HtmlElementRenderVisitor visitor = new HtmlElementRenderVisitor();
+        HtmlElementRenderVisitor visitor = new HtmlElementRenderVisitor(indent);
         try {
             htmlElementService.visitElement("html", visitor);
         } catch (Exception e) {
@@ -235,14 +236,12 @@ public class HtmlDocument implements Observable {
         return visitor;
     }
 
-    public HtmlElementRenderVisitor getRenderInfo(int indent) {
-        HtmlElementRenderVisitor visitor = new HtmlElementRenderVisitor(indent);
-        try {
-            htmlElementService.visitElement("html", visitor);
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurred when rendering "+e.getMessage());
-        }
-        return visitor;
+    public void setIndent(int indent){
+        this.indent=indent;
+    }
+
+    public int getIndent(){
+        return indent;
     }
 
     public void setRepresentationStrategy(HtmlRepresentationStrategy strategy){
