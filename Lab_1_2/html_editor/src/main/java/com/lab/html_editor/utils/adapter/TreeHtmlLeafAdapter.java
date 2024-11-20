@@ -10,7 +10,7 @@ import com.lab.html_editor.utils.decorator.DecoratorType;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 import com.lab.html_editor.utils.adapter.provider.*;
 
-public class TreeHtmlLeafAdapter extends TreeContentProvider<HtmlLeaf> implements TreeAdapter{
+public class TreeHtmlLeafAdapter extends TreeLeafProvider implements Adapter{
     private boolean showId=true;
     public TreeHtmlLeafAdapter(HtmlLeaf leaf,boolean showId){
         super(leaf);
@@ -53,9 +53,7 @@ public class TreeHtmlLeafAdapter extends TreeContentProvider<HtmlLeaf> implement
         return leaf.getText();
     }
 
-    public List<TreeNode> getChildren(){
-        return null;
-    }
+    
 
     
 }

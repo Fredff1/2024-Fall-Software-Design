@@ -11,7 +11,7 @@ import com.lab.html_editor.utils.adapter.provider.*;
 
 import java.util.*;
 
-public class TreeHtmlCompositeAdapter extends TreeContentProvider<HtmlComposite> implements TreeAdapter{  
+public class TreeHtmlCompositeAdapter extends TreeCompositeProvider implements Adapter{  
     private boolean showId=true;
     public TreeHtmlCompositeAdapter(HtmlComposite composite,boolean showId){
         super(composite);
@@ -44,13 +44,13 @@ public class TreeHtmlCompositeAdapter extends TreeContentProvider<HtmlComposite>
 
     public List<TreeNode> getChildren(){
         var children=((HtmlComposite)node).getChildren();
-        List<TreeNode> result=new ArrayList<>();
-        for(var child:children){
-            if((child instanceof HtmlText)&&(((HtmlText)child).getText().trim().isEmpty())){
-                continue;
-            }
-            result.add(child);
-        }
-       return result;
+        // List<TreeNode> result=new ArrayList<>();
+        // for(var child:children){
+        //     if((child instanceof HtmlText)&&(((HtmlText)child).getText().trim().isEmpty())){
+        //         continue;
+        //     }
+        //     result.add(child);
+        // }
+       return children;
     }
 }

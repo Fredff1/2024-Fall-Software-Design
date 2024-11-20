@@ -7,13 +7,14 @@ import com.lab.html_editor.model.htmlElement.HtmlFixedElement;
 import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.HtmlAttributes.HtmlIdAttribute;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
+import com.lab.html_editor.utils.factory.adapter_Factory.IndentAdapterFactory;
 
 
 
 /**
  * 缩进打印策略
  */
-public class HtmlIndentedRepresentation implements HtmlRepresentationStrategy{
+public class HtmlIndentedRepresentation extends IndentedRepresentation implements HtmlRepresentationStrategy{
     
 
     protected boolean isFixedInstance(HtmlElement element){
@@ -23,7 +24,7 @@ public class HtmlIndentedRepresentation implements HtmlRepresentationStrategy{
         return false;
     }
 
-    private String toStringCompositeHelper(HtmlElement element,int indentLevel,int original_indentLevel){
+    private String toStringCompositeHelpear(HtmlElement element,int indentLevel,int original_indentLevel){
         if(!(element instanceof HtmlComposite)){
             throw new IllegalArgumentException("Unsupported composite strategy");
         }
@@ -31,8 +32,8 @@ public class HtmlIndentedRepresentation implements HtmlRepresentationStrategy{
         String indent = " ".repeat(indentLevel);  // 缩进处理
 
         // 开始标签
-        sb.append("\n");
-        sb.append(indent).append("<").append(element.getTagName().getTagString());
+        sb.append("\n").append(indent);
+        sb.append("<").append(element.getTagName().getTagString());
 
         // 添加属性
         if (!element.getAttributes().isEmpty()) {
@@ -61,7 +62,7 @@ public class HtmlIndentedRepresentation implements HtmlRepresentationStrategy{
                         sb.append(indent);
                     }else if (child instanceof HtmlComposite) {
 
-                        sb.append(toStringCompositeHelper((HtmlComposite)child, indentLevel+original_indentLevel, original_indentLevel));
+                        //sb.append(toStringCompositeHelper((HtmlComposite)child, indentLevel+original_indentLevel, original_indentLevel));
                     }
                     if(i==childrenSize-1){
                         sb.append("\n").append(indent);  // 缩进结束标签与开始标签对齐
@@ -84,16 +85,12 @@ public class HtmlIndentedRepresentation implements HtmlRepresentationStrategy{
     @Override
     public String toStringRepresentation(HtmlElement element,int indentLevel){
         String str="";
-        if(element instanceof HtmlComposite){
-            str=toStringCompositeHelper(element, indentLevel, indentLevel);
-        }else if(element instanceof HtmlLeaf){
-            str=toStringRepresentationLeaf(element, indentLevel);
-        }
+        str=toString(IndentAdapterFactory.createAdapter(element), indentLevel);
 
         return str;
     }
 
-    public String toStringRepresentationLeaf(HtmlElement element,int indentLevel){
+    public String toStringRepresentationLeafa(HtmlElement element,int indentLevel){
         if (!(element instanceof HtmlLeaf)) {
             throw new IllegalArgumentException("Unsupported Leaf strategy");
         }

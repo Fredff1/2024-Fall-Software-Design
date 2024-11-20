@@ -12,18 +12,22 @@ import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 import com.lab.html_editor.utils.adapter.TreeHtmlCompositeAdapter;
 import com.lab.html_editor.utils.adapter.TreeHtmlLeafAdapter;
+import com.lab.html_editor.utils.adapter.provider.Adapter;
+import com.lab.html_editor.utils.adapter.provider.TreeCompositeProvider;
+import com.lab.html_editor.utils.adapter.provider.TreeLeafProvider;
+import com.lab.html_editor.utils.factory.adapter_Factory.TreeAdapterFactory;
 
 public abstract class TreeRepresentation implements RepresentationStrategy{
     
 
-    protected void buildRepresentation(TreeNode element, StringBuilder sb, List<Boolean> isLastList, boolean isRoot) {
+    protected void buildRepresentation(Adapter element, StringBuilder sb, List<Boolean> isLastList, boolean isRoot) {
         if (!isRoot) {
             sb.append(buildIndent(isLastList));
         }
 
-        if (element instanceof TreeComposite) {
-            TreeComposite composite = (TreeComposite) element;
-            var compositeAdapter=new TreeHtmlCompositeAdapter((HtmlComposite)composite, isRoot);
+        if (element instanceof TreeCompositeProvider) {
+            
+            var compositeAdapter=(TreeCompositeProvider)element;
            
             sb.append(compositeAdapter.getFeature());
 
@@ -35,15 +39,20 @@ public abstract class TreeRepresentation implements RepresentationStrategy{
 
             for (int i = 0; i < children.size(); i++) {
                 TreeNode child = children.get(i);
-                
+                Adapter childAdapter=TreeAdapterFactory.createAdapter(child);
+                if(childAdapter instanceof TreeLeafProvider){
+                    var leafAdapter=(TreeLeafProvider)childAdapter;
+                    if(leafAdapter.isTextNode()&&leafAdapter.getText().trim().isEmpty()){
+                        continue;
+                    }
+                }
                 boolean isLast = (i == children.size() - 1);
                 isLastList.add(isLast);
-                buildRepresentation(child, sb, isLastList, false);
+                buildRepresentation(childAdapter, sb, isLastList, false);
                 isLastList.remove(isLastList.size() - 1);
             }
-        } else if (element instanceof TreeLeaf) {
-            TreeLeaf leaf = (TreeLeaf) element;
-            var leafAdapter=new TreeHtmlLeafAdapter((HtmlLeaf)leaf, isRoot);
+        } else if (element instanceof TreeLeafProvider) {
+            var leafAdapter=(TreeLeafProvider)element;
             
             if(leafAdapter.isTextNode()){
                  

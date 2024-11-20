@@ -4,7 +4,7 @@ import com.lab.html_editor.model.htmlElement.*;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 
 import com.lab.html_editor.utils.adapter.TreeHtmlLeafAdapter;
-
+import com.lab.html_editor.utils.factory.adapter_Factory.TreeAdapterFactory;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ public class HtmlTreeRepresentation extends TreeRepresentation implements HtmlRe
     public String toStringRepresentation(HtmlElement element,int indent){
         StringBuilder sb = new StringBuilder();
 
-        buildRepresentation(element, sb, new ArrayList<>(), true);
+        buildRepresentation(TreeAdapterFactory.createAdapter(element), sb, new ArrayList<>(), true);
         return sb.toString();
     }
 
