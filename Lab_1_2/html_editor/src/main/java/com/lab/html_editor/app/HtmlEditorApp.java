@@ -12,7 +12,6 @@ public class HtmlEditorApp {
     private final HtmlController controller;
     private final HtmlEditorCommandParser parser;
     private final SpellCheckService spellCheckService;
-    private final ConsoleCommandManager consoleCommandManager;
     private final Scanner scanner;
 
     private boolean isRunning=true;
@@ -26,9 +25,8 @@ public class HtmlEditorApp {
      */
     public HtmlEditorApp(){
         this.view=new HtmlView();
-        this.consoleCommandManager=new ConsoleCommandManager();
         this.spellCheckService=new SpellCheckService();
-        this.controller=new HtmlController(view,consoleCommandManager,spellCheckService);
+        this.controller=new HtmlController(view,spellCheckService);
         this.parser=new HtmlEditorCommandParser(controller,view);
         this.scanner=new Scanner(System.in);
     }

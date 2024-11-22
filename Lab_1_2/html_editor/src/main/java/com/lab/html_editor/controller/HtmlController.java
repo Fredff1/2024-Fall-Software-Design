@@ -2,11 +2,23 @@ package com.lab.html_editor.controller;
 
 import com.lab.html_editor.controller.events.Event;
 import com.lab.html_editor.controller.events.StatusEvent;
+import com.lab.html_editor.model.FileElement.FileTreeManager;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.io.HtmlIO;
 import com.lab.html_editor.service.io.JsoupHtmlIO;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
 import com.lab.html_editor.utils.command.*;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlAppendCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlDeleteCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlEditContentCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlEditIdCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlInsertCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlPrintIndentCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlPrintTreeCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlShowIdCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlSpellCheckCommand;
+import com.lab.html_editor.utils.command.workspace_command.ConsoleHtmlSaveFileCommand;
+import com.lab.html_editor.utils.command.workspace_command.ConsoleLoadFileCommand;
 import com.lab.html_editor.utils.observer.Observer;
 import com.lab.html_editor.view.HtmlView;
 
@@ -20,19 +32,15 @@ public class HtmlController implements Observer{
     private final HtmlView view;
     private final HtmlIO ioManager=new JsoupHtmlIO();
     private final SpellCheckService spellCheckService;
+    private final FileTreeManager fileTreeManager=new FileTreeManager();
     private final HtmlDocumentManager documentManager=new HtmlDocumentManager(this);
 
     
 
    
-    public HtmlController(HtmlDocument document, HtmlView view,SpellCheckService spellCheckService) {
-        this.view = view;
-        view.addObserver(this);
-        this.spellCheckService=spellCheckService;
-        this.documentManager.addEditor(document);
-    }
+    
 
-    public HtmlController(HtmlView view,ConsoleCommandManager consoleCommandManager,SpellCheckService spellCheckService ){
+    public HtmlController(HtmlView view,SpellCheckService spellCheckService ){
         this.view = view;
         view.addObserver(this);
         this.spellCheckService=spellCheckService;
@@ -48,7 +56,13 @@ public class HtmlController implements Observer{
             break;
             case ERROR_EVENT:
             break;
+            default:
+            break;
         }
+    }
+
+    public FileTreeManager getFileTreeManager(){
+        return this.fileTreeManager;
     }
     
     public HtmlIO getIOManager(){
@@ -67,10 +81,7 @@ public class HtmlController implements Observer{
     
     /* 一系列具体的命令*/
 
-    public void initCommand(String documentName,String title){
-        ConsoleHtmlInitCommand initCommand= new ConsoleHtmlInitCommand(documentManager, documentName, title);
-        documentManager.getDefaultCommandManager().executeCommand(initCommand);
-    }
+    
 
     public void editElementId(String oldId, String newId) {
         ConsoleCommand editCommand = new ConsoleHtmlEditIdCommand(documentManager.getActiveDocument(), oldId, newId);
@@ -99,14 +110,23 @@ public class HtmlController implements Observer{
        
     }
 
-    public void readFile(String filePath){
-        ConsoleCommand readCommand= new ConsoleHtmlReadFileCommand(this, filePath);
-        documentManager.getDefaultCommandManager().executeCommand(readCommand);
+    public void loadFile(String filePath){
+        ConsoleCommand loadCommand=new ConsoleLoadFileCommand(filePath, this);
+        documentManager.executeWorkspaceCommand(loadCommand);
     }
 
-    public void writeFile(String filePath){
-        ConsoleCommand writeCommand= new ConsoleHtmlWriteFileCommand(this, filePath);
+    
+
+    public void saveFile(){
+        ConsoleCommand writeCommand= new ConsoleHtmlSaveFileCommand(this);
         documentManager.getActiveEditor().execute(writeCommand);
+    }
+
+    public void listEditors(){
+        var editors=documentManager.getEditors();
+        for(var editor:editors.values()){
+            view.displayMessage(editor.toString());
+        }
     }
 
     public void printCommandForTest(){
@@ -122,6 +142,11 @@ public class HtmlController implements Observer{
     // 处理重做请求
     public void redoLastCommand() {
         documentManager.getActiveCommandManager().redo();
+    }
+
+    public void showIdCommand(boolean showId){
+        ConsoleHtmlShowIdCommand showIdCommand=new ConsoleHtmlShowIdCommand(documentManager.getActiveEditor(), showId);
+        documentManager.executeOnActiveEditor(showIdCommand);
     }
 
     public void spellCheck(){
@@ -144,7 +169,7 @@ public class HtmlController implements Observer{
     }
 
 
-    private void handleStatusEvent(StatusEvent event){
+    public void handleStatusEvent(StatusEvent event){
         boolean isSuccessful=event.isSuccessful();
         String message=event.getMessage();
         documentManager.getActiveEditor().getAllEvents().add(event);

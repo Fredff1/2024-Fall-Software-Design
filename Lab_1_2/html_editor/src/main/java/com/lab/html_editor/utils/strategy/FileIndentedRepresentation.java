@@ -1,0 +1,13 @@
+package com.lab.html_editor.utils.strategy;
+
+import com.lab.html_editor.model.FileElement.AbstractFileNode;
+import com.lab.html_editor.utils.factory.adapter_Factory.IndentAdapterFactory;
+
+public class FileIndentedRepresentation extends IndentedRepresentation implements FileRepresentationStrategy{
+    public String toStringRepresentation(AbstractFileNode element,int indent){
+        String str="";
+        str=toString(IndentAdapterFactory.createAdapter(element), indent);
+
+        return str;
+    }
+}

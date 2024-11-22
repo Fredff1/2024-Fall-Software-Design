@@ -29,7 +29,7 @@ public class HtmlEditorCommandParser {
         
         String[] parts = commandLine.split(" ");
         String command = parts[0];
-        if(controller.hasActiveDocument()==false&&command.equals("init")==false&&command.equals("read")==false){
+        if(controller.hasActiveDocument()==false&&command.equals("load")==false){
             view.displayMessage("Error: There are no active Html Documents!");
             view.displayMessage("Use command init or read to initialize!");
             return;
@@ -57,11 +57,8 @@ public class HtmlEditorCommandParser {
             case "redo":
                 handleRedo(commandLine, parts);
                 break;
-            case "init":
-                handleInit(commandLine, parts);
-                break;
-            case "read":
-                handleRead(commandLine, parts);
+            case "load":
+                handleLoad(commandLine, parts);
                 break;
             case "save":
                 handleSave(commandLine, parts);
@@ -75,8 +72,14 @@ public class HtmlEditorCommandParser {
             case "spell-check":
                 handleSpellCheck(commandLine, parts);
                 break;
+            case "showid":
+                handleShowId(commandLine, parts);
+                break;
             case "help":
                 handleHelp(commandLine, parts);
+                break;
+            case "editor-list":
+                handleEditorList();
                 break;
             default:
                 handleUnknownCommand(commandLine, parts);
@@ -86,6 +89,26 @@ public class HtmlEditorCommandParser {
 
     private void handleUnknownCommand(String commandLine,String[] parts){
         controller.handleUnknownCommand(commandLine,commandMap.keySet());
+    }
+
+    private void handleShowId(String commandLine,String[] parts){
+        if(parts.length>=2){
+            parts = commandLine.split(" ", 2);
+            String flag=parts[1];
+            if(flag.equals("true")){
+                boolean showId=true;
+                controller.showIdCommand(showId);
+            }else if(flag.equals("false")){
+                boolean showId=false;
+                controller.showIdCommand(showId);
+            }else{
+                view.displayErrorMessage("Invalid flag "+parts[1]);
+            }
+        }else{
+            view.displayErrorMessage("flag not found");
+        }
+            
+        
     }
 
     private void handleAppend(String commandLine,String[] parts){
@@ -167,22 +190,13 @@ public class HtmlEditorCommandParser {
         controller.redoLastCommand();
     }
 
-    private void handleInit(String commandLine,String[] parts){
-        if (parts.length >= 3) {
-            parts = commandLine.split(" ", 3);
-            String documentName = parts[1];
-            String title = parts[2];
-            controller.initCommand(documentName, title);
-        }else{
-            controller.initCommand("new_document", "");
-        } 
-    }
 
-    private void handleRead(String commandLine,String[] parts){
+
+    private void handleLoad(String commandLine,String[] parts){
         if (parts.length >= 2) {
             parts = commandLine.split(" ", 2);
             String path = parts[1];
-            controller.readFile(path);
+            controller.loadFile(path);
 
         } else {
             view.displayMessage("Invalid read command");
@@ -191,10 +205,8 @@ public class HtmlEditorCommandParser {
     }
 
     private void handleSave(String commandLine,String[] parts){
-        if (parts.length >= 2) {
-            parts = commandLine.split(" ", 2);
-            String path = parts[1];
-            controller.writeFile(path);
+        if (parts.length >= 1) {
+            controller.saveFile();
         } else {
             view.displayMessage("Invalid save command");
             view.displayMessage("Correct format: "+commandMap.get(parts[0]));
@@ -232,6 +244,10 @@ public class HtmlEditorCommandParser {
             view.displayMessage(cmd);
         }
         view.displaySplitLine();
+    }
+
+    private void handleEditorList(){
+        controller.listEditors();
     }
 
     private void initCommandMap(){

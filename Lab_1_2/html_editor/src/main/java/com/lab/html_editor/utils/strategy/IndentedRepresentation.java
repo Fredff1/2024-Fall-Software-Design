@@ -61,7 +61,7 @@ public abstract class IndentedRepresentation implements RepresentationStrategy{
                 }else if (child instanceof TreeComposite) {
                     sb.append(toStringCompositeHelper(childAdapter, indentLevel+original_indentLevel, original_indentLevel));
                 }
-                if(i==childrenSize-1){
+                if(i==childrenSize-1&&adapter.getSuffix().isEmpty()==false){
                     sb.append("\n").append(indent);  // 缩进结束标签与开始标签对齐
                 }
             }

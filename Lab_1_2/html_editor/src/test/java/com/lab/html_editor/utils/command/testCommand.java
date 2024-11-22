@@ -13,17 +13,25 @@ import com.lab.html_editor.model.exceptions.HtmlServiceSearchException;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.HtmlService;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlAppendCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlDeleteCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlEditContentCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlEditIdCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlInsertCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlPrintIndentCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlPrintTreeCommand;
+import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlSpellCheckCommand;
 import com.lab.html_editor.view.HtmlView;
 
 public class testCommand {
     private ConsoleCommandManager manager = new ConsoleCommandManager();
     private HtmlDocument document = new HtmlDocument("a", "a", new HtmlService());
     private HtmlView view = new HtmlView();
-    private HtmlController controller = new HtmlController(view,new ConsoleCommandManager(),new SpellCheckService());
+    private HtmlController controller = new HtmlController(view,new SpellCheckService());
 
     @Before
     public void setUp() {
-        controller.getDocumentManager().addEditor(document);
+        controller.getDocumentManager().addEditor(document,null);
     }
 
     @Test
@@ -52,13 +60,7 @@ public class testCommand {
         assert (manager.executeCommand(printIndentCommand));
         ConsoleHtmlPrintTreeCommand printTreeCommand = new ConsoleHtmlPrintTreeCommand(document);
         assert (manager.executeCommand(printTreeCommand));
-        ConsoleHtmlInitCommand initCommand = new ConsoleHtmlInitCommand(controller.getDocumentManager(), "a", "a");
-        manager.executeCommand(initCommand);
-        assert (controller.getActiveDocument().getDocumentName().equals("a"));
-        ConsoleHtmlReadFileCommand readFileCommand = new ConsoleHtmlReadFileCommand(controller,
-                "3.txt");
-        manager.executeCommand(readFileCommand);
-        assert (controller.getActiveDocument().getDocumentName().equals("3.txt"));
+        
         ConsoleHtmlSpellCheckCommand appCheckCommand = new ConsoleHtmlSpellCheckCommand(document,
                 new SpellCheckService());
         assert (manager.executeCommand(appCheckCommand));

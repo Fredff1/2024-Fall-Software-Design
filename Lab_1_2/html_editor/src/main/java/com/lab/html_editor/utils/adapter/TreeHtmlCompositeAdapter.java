@@ -6,21 +6,20 @@ import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.HtmlShowIdDecorator;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 import com.lab.html_editor.utils.adapter.provider.*;
 
 import java.util.*;
 
 public class TreeHtmlCompositeAdapter extends TreeCompositeProvider implements Adapter{  
-    private boolean showId=true;
-    public TreeHtmlCompositeAdapter(HtmlComposite composite,boolean showId){
+
+    public TreeHtmlCompositeAdapter(HtmlComposite composite){
         super(composite);
-        this.showId=showId;
+       
     }
 
-    public boolean isShowId(){
-        return showId;
-    }
+  
 
    
 
@@ -32,7 +31,8 @@ public class TreeHtmlCompositeAdapter extends TreeCompositeProvider implements A
         if(decorator.hasSpellCheckErrors()){
             builder.append("[X]");
         }
-        if(showId){
+        HtmlShowIdDecorator idDecorator=(HtmlShowIdDecorator)composite.getDecorator(DecoratorType.HTML_SHOWID_DECORATOR);
+        if(idDecorator.isShowId()){
             builder.append(" #").append(composite.getId());
         }
         return builder.toString();

@@ -23,13 +23,6 @@ public class ConsoleCommandManager implements Observable{
 
 
     public boolean executeCommand(ConsoleCommand command) {
-        if(!(command instanceof ConsoleHtmlInitCommand)&&!(command instanceof ConsoleHtmlReadFileCommand)){
-            if(initialized==false){
-                throw new UninitializedException("The document has not been initialized!");
-            }
-        }else{
-            initialized=true;
-        }
             
         
         boolean flag=command.execute();  // 执行命令
@@ -94,11 +87,15 @@ public class ConsoleCommandManager implements Observable{
         }
     }
 
+    public boolean isUndoStackEmpty(){
+        return undoStack.empty();
+    }
+
     public void setInit(final boolean flag){
         initialized=flag;
     }
 
-     public void addObserver(Observer observer){
+    public void addObserver(Observer observer){
         observers.add(observer);
     }
 

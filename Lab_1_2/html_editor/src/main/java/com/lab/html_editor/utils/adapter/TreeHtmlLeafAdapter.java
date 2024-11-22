@@ -7,14 +7,15 @@ import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlLeaf;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 import com.lab.html_editor.utils.decorator.DecoratorType;
+import com.lab.html_editor.utils.decorator.HtmlShowIdDecorator;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 import com.lab.html_editor.utils.adapter.provider.*;
 
 public class TreeHtmlLeafAdapter extends TreeLeafProvider implements Adapter{
-    private boolean showId=true;
-    public TreeHtmlLeafAdapter(HtmlLeaf leaf,boolean showId){
+
+    public TreeHtmlLeafAdapter(HtmlLeaf leaf){
         super(leaf);
-        this.showId=showId;
+
     }
 
    
@@ -23,9 +24,7 @@ public class TreeHtmlLeafAdapter extends TreeLeafProvider implements Adapter{
         return node instanceof HtmlText;
     }
 
-    public boolean isShowId(){
-        return showId;
-    }
+   
     
     public String getFeature(){
         HtmlLeaf leaf=(HtmlLeaf)node;
@@ -41,7 +40,8 @@ public class TreeHtmlLeafAdapter extends TreeLeafProvider implements Adapter{
             if(spellcheckDecorator.hasSpellCheckErrors()){
                 builder.append("[X]");
             }
-            if(showId){
+            HtmlShowIdDecorator idDecorator=(HtmlShowIdDecorator)leaf.getDecorator(DecoratorType.HTML_SHOWID_DECORATOR);
+            if(idDecorator.isShowId()){
                 builder.append(" #").append(leaf.getId());
             }
         }

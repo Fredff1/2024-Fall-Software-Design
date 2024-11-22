@@ -16,7 +16,7 @@ import com.lab.html_editor.utils.visitor.html_visitor.HtmlVisitor;
 
 import java.util.*;
 
-public abstract class HtmlElement implements HtmlVisitable,TreeNode{
+public abstract class HtmlElement implements HtmlVisitable,TreeNode,Decorative{
     private String id;
     private HtmlTagName tagName;
     
@@ -32,7 +32,7 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
         this.setId(id);
         this.tagName=new HtmlTagName(tagName);
         addDecorator(new HtmlSpellCheckDecorator(this));
-        addDecorator(new HtmlShowIdDecorator(this, false));
+        addDecorator(new HtmlShowIdDecorator(this, true));
     }
 
    
@@ -44,8 +44,8 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode{
         return attributes;
     }
 
-    public void addDecorator(HtmlElementDecorator decorator){
-        decorators.put(decorator.getType(), decorator);
+    public void addDecorator(Decorator decorator){
+        decorators.put(decorator.getType(), (HtmlElementDecorator)decorator);
     }
 
     public void removeDEcorator(DecoratorType type){

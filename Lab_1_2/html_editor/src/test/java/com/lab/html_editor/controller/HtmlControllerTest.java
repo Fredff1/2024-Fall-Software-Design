@@ -21,7 +21,8 @@ public class HtmlControllerTest {
 
     private void reInit(){
         this.document = new HtmlDocument("testController", "test",new HtmlService());
-        this.controller = new HtmlController(document, new HtmlView(),new SpellCheckService());
+        this.controller = new HtmlController(new HtmlView(),new SpellCheckService());
+        this.controller.getDocumentManager().addEditor(document, null);
         controller.appendElement("div", "div_1", "body", "this is a div");
     }
   
@@ -30,7 +31,8 @@ public class HtmlControllerTest {
     @Before
     public void setUp() {
         this.document = new HtmlDocument("testController", "test",new HtmlService());
-        this.controller = new HtmlController(document, new HtmlView(),new SpellCheckService());
+        this.controller = new HtmlController(new HtmlView(),new SpellCheckService());
+        this.controller.getDocumentManager().addEditor(document, null);
         controller.appendElement("h1", "sub_title_1", "body", "This is the title");
         controller.appendElement("p", "description", "body", "This is a paragraph");
         controller.appendElement("ul", "list_1", "body", "This is a list");
@@ -114,12 +116,7 @@ public class HtmlControllerTest {
         assertEquals("p_6", ((HtmlLeaf) editedElement).getId());
     }
 
-    @Test
-    public void testCommandRead(){
-        assertThrows(RuntimeException.class, ()->{
-            controller.readFile("dsds.dsfdsd/dsf/dfsds");
-        });        
-    }
+   
 
     @Test
     public void testCommandAll() {
@@ -149,8 +146,8 @@ public class HtmlControllerTest {
 
     @Test
     public void testUninit(){
-        this.controller = new HtmlController( new HtmlView(),new ConsoleCommandManager(),new SpellCheckService());
-
+        this.controller = new HtmlController( new HtmlView(),new SpellCheckService());
+        this.controller.getDocumentManager().addEditor(document, null);
         assertThrows(UninitializedException.class, ()->{
             controller.appendElement("p", "p_4", "div_1", "New paragraph for testing");
         });

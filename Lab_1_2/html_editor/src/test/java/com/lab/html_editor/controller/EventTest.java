@@ -15,6 +15,8 @@ import com.lab.html_editor.model.exceptions.HtmlAppendExcption;
 import com.lab.html_editor.model.exceptions.HtmlDeleteException;
 import com.lab.html_editor.model.exceptions.HtmlEditFailException;
 import com.lab.html_editor.model.exceptions.HtmlInsertException;
+import com.lab.html_editor.model.htmlElement.HtmlDocument;
+import com.lab.html_editor.service.HtmlService;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
 import com.lab.html_editor.utils.command.ConsoleCommandManager;
 import com.lab.html_editor.view.HtmlView;
@@ -25,9 +27,9 @@ public class EventTest {
     StatusEvent event=null;
     @Before
     public void setUp(){
-        controller=new HtmlController(new HtmlView(), new ConsoleCommandManager(), new SpellCheckService());
+        controller=new HtmlController(new HtmlView(), new SpellCheckService());
         documentManager=controller.getDocumentManager();
-        controller.initCommand("a", "");
+        controller.getDocumentManager().addEditor(new HtmlDocument("a", "a", new HtmlService()), null);
     }
 
     @Test
