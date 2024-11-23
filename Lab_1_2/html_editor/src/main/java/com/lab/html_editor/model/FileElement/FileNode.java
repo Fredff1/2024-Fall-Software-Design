@@ -4,7 +4,7 @@ import com.lab.html_editor.model.TreeComposite;
 import com.lab.html_editor.model.TreeLeaf;
 
 public class FileNode extends AbstractFileNode implements TreeLeaf{
-    private String name;
+
 
     public FileNode(String name,String absolutePath,TreeComposite father) {
         super(name, absolutePath, father);

@@ -12,7 +12,7 @@ import com.lab.html_editor.utils.visitor.html_visitor.HtmlElementSpellCheckVisit
 
 
 
-public class ConsoleHtmlSpellCheckCommand extends ConsoleEditorCommand implements ConsoleUpdateCommand{
+public class ConsoleHtmlSpellCheckCommand extends ConsoleEditorCommand {
 
     private final HtmlDocument document;
     private final SpellCheckService spellCheckService;

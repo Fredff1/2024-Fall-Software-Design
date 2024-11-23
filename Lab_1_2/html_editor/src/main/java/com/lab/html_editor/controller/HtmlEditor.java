@@ -31,6 +31,7 @@ public class HtmlEditor implements Observer, Observable{
         this.fileNode=node;
         this.commandManager = new ConsoleCommandManager();
         commandManager.addObserver(this);
+        document.addObserver(this);
         this.events = new LinkedList<>();
     }
 

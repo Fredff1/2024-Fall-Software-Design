@@ -6,6 +6,7 @@ import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
 import com.lab.html_editor.utils.command.ConsoleCommand;
 import com.lab.html_editor.utils.command.ConsoleCommandManager;
+import com.lab.html_editor.utils.command.workspace_command.ConsoleHtmlSaveFileCommand;
 
 import java.io.Console;
 import java.util.*;
@@ -30,8 +31,8 @@ public class HtmlDocumentManager {
         
         HtmlEditor editor = new HtmlEditor(document,node);
         editor.addObserver(controller);
-        editors.put(document.getDocumentName(), editor);
-        setActiveEditor(document.getDocumentName());
+        editors.put(node.getAbsolutePath(), editor);
+        setActiveEditor(node.getAbsolutePath());
         return editor;
     }
 
@@ -50,9 +51,9 @@ public class HtmlDocumentManager {
     }
 
     
-    public boolean setActiveEditor(String documentName) {
-        if (editors.containsKey(documentName)) {
-            activeEditor = editors.get(documentName);
+    public boolean setActiveEditor(String path) {
+        if (editors.containsKey(path)) {
+            activeEditor = editors.get(path);
             return true;
         }
         return false;
@@ -94,6 +95,7 @@ public class HtmlDocumentManager {
 
     public void executeWorkspaceCommand(ConsoleCommand command){
         defaultCommandManager.executeCommand(command);
+       
     }
 
     

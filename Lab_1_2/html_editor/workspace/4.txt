@@ -5,10 +5,10 @@
     </head>
     <body>
       Body    
-      <ul id="list">      
+      <ul id="list">
         <li id="li_0">li0</li>      
         <li id="li_1">Hello World</li>      
-        <li id="li_4"></li>      
+        <li id="li_4">j</li>      
         <li id="li_2">Yes</li>      
       </ul>
     </body>

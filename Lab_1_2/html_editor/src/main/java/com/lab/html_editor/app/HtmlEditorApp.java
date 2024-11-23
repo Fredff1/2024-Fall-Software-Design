@@ -39,17 +39,15 @@ public class HtmlEditorApp {
         while (isRunning) {
             view.displayMessageInOneLine("");
             String commandLine = scanner.nextLine();
+            try{
+                parser.parseCommand(commandLine); 
+            }catch(Exception e){
+                view.displayErrorMessage(e.getMessage());
+            }
             if (commandLine.equalsIgnoreCase("exit")) {
                 isRunning = false;
                 view.displayMessage("Exiting the HTML Editor.");
-            } else {
-                try{
-                    parser.parseCommand(commandLine); 
-                }catch(Exception e){
-                    view.displayErrorMessage(e.getMessage());
-                }
-                
-            }
+            } 
         }
         scanner.close();
     }

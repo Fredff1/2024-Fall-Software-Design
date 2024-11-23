@@ -29,11 +29,6 @@ public class HtmlEditorCommandParser {
         
         String[] parts = commandLine.split(" ");
         String command = parts[0];
-        if(controller.hasActiveDocument()==false&&command.equals("load")==false){
-            view.displayMessage("Error: There are no active Html Documents!");
-            view.displayMessage("Use command init or read to initialize!");
-            return;
-        }
 
         switch (command.toLowerCase()) {
             case "append":
@@ -80,6 +75,18 @@ public class HtmlEditorCommandParser {
                 break;
             case "editor-list":
                 handleEditorList();
+                break;
+            case "dir-tree":
+                handleDirTree(commandLine, parts);
+                break;
+            case "dir-indent":
+                handleDirIndent(commandLine, parts);
+                break;
+            case "edit":
+                handleSwitchEditor(commandLine, parts);
+                break;
+            case "exit":
+                handleExit(commandLine, parts);
                 break;
             default:
                 handleUnknownCommand(commandLine, parts);
@@ -250,6 +257,40 @@ public class HtmlEditorCommandParser {
         controller.listEditors();
     }
 
+    void handleDirTree(String commandLine,String[] parts){
+        controller.printDirTree();
+    }
+
+    void handleDirIndent(String commandLine,String[] parts){
+        int indent=2;
+        if(parts.length>=2){
+            String indentStr=parts[1];
+            try{
+                indent=Integer.parseInt(indentStr);
+            }catch(Exception e){
+                view.displayMessage("Invalid save command");
+                view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            }
+        }
+        controller.printDirIndent(indent);
+    }
+
+    void handleSwitchEditor(String commandLine,String[] parts){
+        String path="";
+        if(parts.length>=2){
+            path=parts[1];
+            controller.switchEditor(path);
+        }else{
+
+        }
+        
+           
+    }
+
+    void handleExit(String commandLine,String[] parts){
+
+    }
+
     private void initCommandMap(){
         
         commandMap.put("append", "append tagName idValue parentId [textContent]");
@@ -265,6 +306,7 @@ public class HtmlEditorCommandParser {
         commandMap.put("print-indent", "print-indent [indent]");
         commandMap.put("print-tree", "print-tree");
         commandMap.put("spell-check", "spell-check");
+        commandMap.put("edit", "edit filepath(relative or absolute)");
     }
 
 

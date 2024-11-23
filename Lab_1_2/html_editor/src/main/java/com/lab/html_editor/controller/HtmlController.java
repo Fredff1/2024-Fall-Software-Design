@@ -20,6 +20,8 @@ import com.lab.html_editor.utils.command.editor_command.ConsoleHtmlSpellCheckCom
 import com.lab.html_editor.utils.command.workspace_command.ConsoleHtmlSaveFileCommand;
 import com.lab.html_editor.utils.command.workspace_command.ConsoleLoadFileCommand;
 import com.lab.html_editor.utils.observer.Observer;
+import com.lab.html_editor.utils.strategy.FileIndentedRepresentation;
+import com.lab.html_editor.utils.strategy.FileTreeRepresentation;
 import com.lab.html_editor.view.HtmlView;
 
 
@@ -85,28 +87,28 @@ public class HtmlController implements Observer{
 
     public void editElementId(String oldId, String newId) {
         ConsoleCommand editCommand = new ConsoleHtmlEditIdCommand(documentManager.getActiveDocument(), oldId, newId);
-        documentManager.getActiveEditor().execute(editCommand);
+        documentManager.executeOnActiveEditor(editCommand);
     }
 
     public void editElementText(String targetId,String text){
         ConsoleCommand editTextCommand= new ConsoleHtmlEditContentCommand(documentManager.getActiveDocument(), targetId, text,spellCheckService);
-        documentManager.getActiveEditor().execute(editTextCommand);
+        documentManager.executeOnActiveEditor(editTextCommand);
     }
 
     public void insertElement(String tagName,String targetId,String brotherId,String content){
         ConsoleCommand insertCommand= new ConsoleHtmlInsertCommand(this,  tagName, targetId, brotherId,content);
-        documentManager.getActiveEditor().execute(insertCommand);
+        documentManager.executeOnActiveEditor(insertCommand);
         
     }
 
     public void deleteElement(String targetId){
         ConsoleCommand deleteCommand = new ConsoleHtmlDeleteCommand(documentManager.getActiveDocument(), targetId);
-        documentManager.getActiveEditor().execute(deleteCommand);
+        documentManager.executeOnActiveEditor(deleteCommand);
     }
 
     public void appendElement(String tagName,String targetId,String parentId,String content){
         ConsoleCommand appendCommand = new ConsoleHtmlAppendCommand(this,tagName, targetId,parentId, content);
-        documentManager.getActiveEditor().execute(appendCommand);
+        documentManager.executeOnActiveEditor(appendCommand);
        
     }
 
@@ -119,7 +121,7 @@ public class HtmlController implements Observer{
 
     public void saveFile(){
         ConsoleCommand writeCommand= new ConsoleHtmlSaveFileCommand(this);
-        documentManager.getActiveEditor().execute(writeCommand);
+        documentManager.executeWorkspaceCommand(writeCommand);
     }
 
     public void listEditors(){
@@ -136,12 +138,12 @@ public class HtmlController implements Observer{
 
     // 处理撤销请求
     public void undoLastCommand() {
-        documentManager.getActiveCommandManager().undo();
+        documentManager.getActiveEditor().undo();;
     }
 
     // 处理重做请求
     public void redoLastCommand() {
-        documentManager.getActiveCommandManager().redo();
+        documentManager.getActiveEditor().redo();
     }
 
     public void showIdCommand(boolean showId){
@@ -151,17 +153,35 @@ public class HtmlController implements Observer{
 
     public void spellCheck(){
         ConsoleHtmlSpellCheckCommand command=new ConsoleHtmlSpellCheckCommand(documentManager.getActiveDocument(), spellCheckService);
-        documentManager.getActiveEditor().execute(command);
+        documentManager.executeOnActiveEditor(command);
     }
 
     public void printTree(){
         ConsoleHtmlPrintTreeCommand printCommand=new ConsoleHtmlPrintTreeCommand(documentManager.getActiveDocument());
-        documentManager.getActiveEditor().execute(printCommand);
+        documentManager.executeOnActiveEditor(printCommand);
     }
 
     public void printIndent(int indent){
         ConsoleHtmlPrintIndentCommand printCommand=new ConsoleHtmlPrintIndentCommand(documentManager.getActiveDocument(),view,indent);
-        documentManager.getActiveEditor().execute(printCommand);
+        documentManager.executeOnActiveEditor(printCommand);
+    }
+
+    public void printDirTree(){
+        FileTreeRepresentation treeRepresentation=new FileTreeRepresentation();
+        fileTreeManager.getRoot().setRepresentationStrategy(treeRepresentation);
+        view.displayWorkspaceFolder(fileTreeManager.getRoot().toStringRepresentation());
+    }
+
+    public void printDirIndent(int indent){
+        FileIndentedRepresentation representation=new FileIndentedRepresentation(indent);
+        fileTreeManager.getRoot().setRepresentationStrategy(representation);
+        view.displayWorkspaceFolder(fileTreeManager.getRoot().toStringRepresentation());
+    }
+
+    public void switchEditor(String path){
+        String absolutePath=fileTreeManager.resolvePath(path);
+        documentManager.setActiveEditor(absolutePath);
+        documentManager.getActiveEditor().notifyObservers(new StatusEvent("Switch to active file "+absolutePath, true));
     }
 
     public HtmlDocument getActiveDocument(){

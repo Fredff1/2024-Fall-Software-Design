@@ -7,6 +7,7 @@ import com.lab.html_editor.utils.decorator.*;
 import com.lab.html_editor.utils.strategy.FileIndentedRepresentation;
 import com.lab.html_editor.utils.strategy.FileRepresentationStrategy;
 import com.lab.html_editor.utils.strategy.FileTreeRepresentation;
+import com.lab.html_editor.utils.strategy.RepresentationStrategy;
 
 import java.util.*;
 
@@ -15,7 +16,7 @@ public abstract class AbstractFileNode implements TreeNode,Decorative{
     protected String name;
     protected String absolutePath;
     private final Map<DecoratorType,FileNodeDecorator> decorators=new HashMap<>();
-    protected FileRepresentationStrategy strategy= new FileIndentedRepresentation();//new FileTreeRepresentation();
+    protected FileRepresentationStrategy strategy= new FileTreeRepresentation();//new FileTreeRepresentation();
 
     public AbstractFileNode(String name,String absolutePath,TreeComposite father){
         this.father=father;
@@ -58,6 +59,10 @@ public abstract class AbstractFileNode implements TreeNode,Decorative{
     }
 
     public String toStringRepresentation(){
-        return strategy.toStringRepresentation(this,2);
+        return strategy.toStringRepresentation(this);
+    }
+
+    public void setRepresentationStrategy(FileRepresentationStrategy strategy){
+        this.strategy=strategy;
     }
 }

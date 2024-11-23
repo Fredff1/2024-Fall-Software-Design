@@ -52,7 +52,7 @@ public class FileTreeManager {
         return rootNode;
     }
 
-    private String resolvePath(String path) {
+    public String resolvePath(String path) {
         File file = new File(path);
         if (!file.isAbsolute()) {
             file = new File(rootPath, path); // 将相对路径拼接到根目录

@@ -50,6 +50,17 @@ public class HtmlView implements Observable{
         System.out.println("[Success] "+message);
     }
 
+    public void displayDefault(String message){
+        System.out.println(message);
+    }
+
+    public void displayWorkspaceFolder(String message){
+        displaySplitLine();
+        displayDefault("Current workspace directory: ");
+        displayDefault(message);
+        displaySplitLine();
+    }
+
 
 
     public void displayMessageInOneLine(String message){

@@ -31,6 +31,7 @@ public class ConsoleHtmlSaveFileCommand implements ConsoleCommand{
             document.setRepresentationStrategy(new HtmlIndentedRepresentation());
             controller.getIOManager().write(document,editor.getFileNode().getAbsolutePath());
             document.setRepresentationStrategy(prevStrategy);
+            editor.setUpdated(false);
             editor.notifyObservers(new StatusEvent("Successfully write document to file", true));
             return true;
         }catch(Exception e){
