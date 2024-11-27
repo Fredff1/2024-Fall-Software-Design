@@ -37,7 +37,18 @@ public class HtmlDocumentManager {
     }
 
    
-
+    public boolean removeActiveEditor(){
+        String key=activeEditor.getFileNode().getAbsolutePath();
+        editors.remove(key);
+        if(editors.isEmpty()==false){
+            for(var path:editors.keySet()){
+                setActiveEditor(path);
+                return true;
+            }
+            
+        }
+        return false;
+    }
     
     public boolean removeEditor(String documentName) {
         if (editors.containsKey(documentName)) {

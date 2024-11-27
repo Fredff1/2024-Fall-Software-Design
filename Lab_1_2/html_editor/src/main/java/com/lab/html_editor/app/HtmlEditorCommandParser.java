@@ -14,22 +14,23 @@ import java.util.*;
 public class HtmlEditorCommandParser {
     private final HtmlController controller;
     private final HtmlView view;
+    private final HtmlEditorApp app;
     private final Map<String,String> commandMap;
+    private final Scanner scanner;
 
 
-    public HtmlEditorCommandParser(HtmlController controller, HtmlView view) {
+    public HtmlEditorCommandParser(HtmlController controller, HtmlView view,HtmlEditorApp app) {
         this.controller = controller;
         this.view = view;
+        this.app=app;
+        this.scanner=new Scanner(System.in);
         commandMap=new HashMap<>();
         initCommandMap();
     }
 
-    // 解析命令行输入，并调用对应的 Controller 方法
-    public void parseCommand(String commandLine) {
-        
+    public void analyzeCommand(String commandLine){
         String[] parts = commandLine.split(" ");
         String command = parts[0];
-
         switch (command.toLowerCase()) {
             case "append":
                 handleAppend(commandLine,parts);
@@ -57,6 +58,9 @@ public class HtmlEditorCommandParser {
                 break;
             case "save":
                 handleSave(commandLine, parts);
+                break;
+            case "close":
+                handleClose(commandLine, parts);
                 break;
             case "print-indent":
                 handlePrintIndent(commandLine, parts);
@@ -94,6 +98,30 @@ public class HtmlEditorCommandParser {
         }
     }
 
+    // 解析命令行输入，并调用对应的 Controller 方法
+    public void parseCommand() {
+        view.displayMessageInOneLine("");
+        String commandLine = scanner.nextLine();
+        analyzeCommand(commandLine);
+        
+    }
+
+    public boolean confirmCommand(){
+        boolean flag=true;
+        while(flag){
+            String input=scanner.nextLine();
+            if(input.equals("yes")){
+                return true;
+            }else if(input.equals("no")){
+                return false;
+            }else{
+                continue;
+            }
+        }
+        return false;
+        
+    }
+
     private void handleUnknownCommand(String commandLine,String[] parts){
         controller.handleUnknownCommand(commandLine,commandMap.keySet());
     }
@@ -116,6 +144,10 @@ public class HtmlEditorCommandParser {
         }
             
         
+    }
+
+    private void handleClose(String commandLine,String[] parts){
+        controller.closeActiveEditor();
     }
 
     private void handleAppend(String commandLine,String[] parts){
@@ -288,7 +320,9 @@ public class HtmlEditorCommandParser {
     }
 
     void handleExit(String commandLine,String[] parts){
-
+        controller.recordAndExit();
+        scanner.close();
+        app.setIsRunning(false);
     }
 
     private void initCommandMap(){

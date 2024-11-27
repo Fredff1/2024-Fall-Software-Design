@@ -1,9 +1,11 @@
 package com.lab.html_editor.controller;
 
+import com.lab.html_editor.app.HtmlEditorCommandParser;
 import com.lab.html_editor.controller.events.Event;
 import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.model.FileElement.FileTreeManager;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
+import com.lab.html_editor.service.io.HtmlEditorIO;
 import com.lab.html_editor.service.io.HtmlIO;
 import com.lab.html_editor.service.io.JsoupHtmlIO;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
@@ -24,7 +26,7 @@ import com.lab.html_editor.utils.strategy.FileIndentedRepresentation;
 import com.lab.html_editor.utils.strategy.FileTreeRepresentation;
 import com.lab.html_editor.view.HtmlView;
 
-
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -36,9 +38,11 @@ public class HtmlController implements Observer{
     private final SpellCheckService spellCheckService;
     private final FileTreeManager fileTreeManager=new FileTreeManager();
     private final HtmlDocumentManager documentManager=new HtmlDocumentManager(this);
-
+    private HtmlEditorCommandParser parser;
     
-
+    public void setParser(HtmlEditorCommandParser parser){
+        this.parser=parser;
+    }
    
     
 
@@ -46,6 +50,11 @@ public class HtmlController implements Observer{
         this.view = view;
         view.addObserver(this);
         this.spellCheckService=spellCheckService;
+        
+    }
+
+    public void restoreWorkspace(){
+        
     }
 
     /**
@@ -138,7 +147,7 @@ public class HtmlController implements Observer{
 
     // 处理撤销请求
     public void undoLastCommand() {
-        documentManager.getActiveEditor().undo();;
+        documentManager.getActiveEditor().undo();
     }
 
     // 处理重做请求
@@ -182,6 +191,46 @@ public class HtmlController implements Observer{
         String absolutePath=fileTreeManager.resolvePath(path);
         documentManager.setActiveEditor(absolutePath);
         documentManager.getActiveEditor().notifyObservers(new StatusEvent("Switch to active file "+absolutePath, true));
+    }
+
+    public void closeActiveEditor(){
+        if(documentManager.getActiveEditor().isUpdated()){
+            view.displayMessage("Do you want to save active file?[yes/no]");
+            view.displayMessageInOneLine("");
+            boolean isiSave=parser.confirmCommand();
+            if(isiSave){
+                saveFile();
+            }
+            documentManager.getActiveEditor().setUpdated(false);
+        }
+        boolean changeSuccess=documentManager.removeActiveEditor();
+        
+        if(changeSuccess){
+            view.updateView(documentManager.getActiveEditor().getDocument());
+            view.displayMessage("Editor closed");
+            view.displayMessage("Switch active editor to "+documentManager.getActiveEditor().getFileNode().getName());
+        }else{
+            view.clearConsole();
+            view.displayMessage("Editor closed");
+            view.displayMessage("There are no active editors now");
+        }
+    }
+
+    public void recordAndExit(){
+        try{
+            HtmlEditorIO.saveEditors(documentManager.getEditors(), documentManager.getActiveEditor());
+        }catch(IOException e){
+            view.displayErrorMessage("Error Occurred when saving workspace info: "+e.getMessage());
+        }
+    }
+
+    public void restoreHistory(){
+        try{
+            HtmlEditorIO.loadEditors(this);
+            view.updateView(documentManager.getActiveDocument());
+        }catch(IOException e){
+            view.displayErrorMessage("Error Occurred when loading cached info: "+e.getMessage());
+        }
     }
 
     public HtmlDocument getActiveDocument(){

@@ -71,7 +71,7 @@ public class HtmlEditor implements Observer, Observable{
         return fileNode.getAbsolutePath();
     }
 
-    public boolean hasUpdated(){
+    public boolean isUpdated(){
         return updated;
     }
 

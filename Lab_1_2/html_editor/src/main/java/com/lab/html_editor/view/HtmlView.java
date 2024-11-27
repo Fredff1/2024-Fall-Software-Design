@@ -42,6 +42,8 @@ public class HtmlView implements Observable{
         System.out.println("[Console] "+message);
     }
 
+    
+
     public void displayErrorMessage(String message){
         System.out.println("[Error] "+message);
     }

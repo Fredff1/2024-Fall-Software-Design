@@ -12,7 +12,7 @@ public class HtmlEditorApp {
     private final HtmlController controller;
     private final HtmlEditorCommandParser parser;
     private final SpellCheckService spellCheckService;
-    private final Scanner scanner;
+
 
     private boolean isRunning=true;
 
@@ -27,8 +27,8 @@ public class HtmlEditorApp {
         this.view=new HtmlView();
         this.spellCheckService=new SpellCheckService();
         this.controller=new HtmlController(view,spellCheckService);
-        this.parser=new HtmlEditorCommandParser(controller,view);
-        this.scanner=new Scanner(System.in);
+        this.parser=new HtmlEditorCommandParser(controller,view,this);
+        controller.setParser(parser);
     }
 
     /**
@@ -36,20 +36,17 @@ public class HtmlEditorApp {
      */
     public void start(){
         view.displayWelComeStage();
+        controller.restoreHistory();
         while (isRunning) {
-            view.displayMessageInOneLine("");
-            String commandLine = scanner.nextLine();
+            
             try{
-                parser.parseCommand(commandLine); 
+                parser.parseCommand(); 
             }catch(Exception e){
                 view.displayErrorMessage(e.getMessage());
             }
-            if (commandLine.equalsIgnoreCase("exit")) {
-                isRunning = false;
-                view.displayMessage("Exiting the HTML Editor.");
-            } 
+            
         }
-        scanner.close();
+       
     }
 
 
@@ -65,6 +62,10 @@ public class HtmlEditorApp {
         return parser;
     }
 
+    public void setIsRunning(boolean isRunning){
+        this.isRunning=isRunning;
+    }
+
 
     /**
      * 测试用函数，模拟用户输入
@@ -72,7 +73,7 @@ public class HtmlEditorApp {
      */
     public void simulateInput(String input){
         try{
-            parser.parseCommand(input); 
+            parser.analyzeCommand(input); 
         }catch(Exception e){
             view.displayMessage("A serious exception occurred: ");
             e.printStackTrace();

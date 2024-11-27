@@ -30,7 +30,9 @@ public class ConsoleLoadFileCommand extends ConsoleWorkspaceCommand{
                 HtmlDocument newDocument=new HtmlDocument(FileTreeManager.getBasename(filePath), "new file", new HtmlService());
                 manager.addNode(filePath);
                 var editor=controller.getDocumentManager().addEditor(newDocument,(FileNode)manager.getNodeById(filePath));
+                editor.setUpdated(true);
                 editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
+                
             }else{
                 HtmlDocument document=controller.getIOManager().read(manager.resolvePath(filePath),new HtmlService());
                 var editor=controller.getDocumentManager().addEditor(document,(FileNode)node);
