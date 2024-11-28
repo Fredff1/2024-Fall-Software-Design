@@ -1,5 +1,6 @@
 package com.lab.html_editor.view;
 
+import com.lab.html_editor.controller.HtmlEditor;
 import com.lab.html_editor.controller.events.Event;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
 import com.lab.html_editor.utils.observer.Observable;
@@ -70,12 +71,14 @@ public class HtmlView implements Observable{
     }
 
     
-    public void updateView(HtmlDocument document) {
+    public void updateView(HtmlEditor editor) {
+        var document=editor.getDocument();
         clearConsole();
         var visitor = document.getRenderInfo();
         String renderedContent = visitor.geStringRepresentation();
         displaySplitLine();
-        System.out.println("Current Document Structure:");
+        System.out.println("Current Document :");
+        System.out.println("[Document name]:"+editor.getFileNode().getName());
         displaySplitLine();
         System.out.println(renderedContent+"\n");
         displaySplitLine();

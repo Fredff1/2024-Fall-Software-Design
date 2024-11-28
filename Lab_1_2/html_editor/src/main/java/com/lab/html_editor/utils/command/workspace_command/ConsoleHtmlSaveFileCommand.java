@@ -15,33 +15,17 @@ public class ConsoleHtmlSaveFileCommand implements ConsoleCommand{
     private final HtmlController controller;
 
     private final HtmlEditor editor;
-    private final HtmlDocument document;
+
 
 
     public ConsoleHtmlSaveFileCommand(HtmlController controller){
         this.controller=controller;
         this.editor=controller.getDocumentManager().getActiveEditor();
-        this.document=editor.getDocument();
     }
 
     @Override
     public boolean execute(){
-        try{
-            var prevStrategy=document.getRepresentationStrategy();
-            document.setRepresentationStrategy(new HtmlIndentedRepresentation());
-            controller.getIOManager().write(document,editor.getFileNode().getAbsolutePath());
-            document.setRepresentationStrategy(prevStrategy);
-            editor.setUpdated(false);
-            editor.notifyObservers(new StatusEvent("Successfully write document to file", true));
-            return true;
-        }catch(Exception e){
-            if(document==null){
-                return false;
-            }
-            document.notifyObservers(new StatusEvent("Failed to save document to file", false,e));
-            return false;
-        }
-        
+        return controller.getDocumentManager().saveEditorToFile(editor);
     }
 
     @Override

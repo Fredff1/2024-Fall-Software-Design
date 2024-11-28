@@ -1,17 +1,22 @@
 package com.lab.html_editor.controller;
 
+import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.controller.exceptions.UninitializedException;
+import com.lab.html_editor.model.FileElement.AbstractFileNode;
 import com.lab.html_editor.model.FileElement.FileNode;
+import com.lab.html_editor.model.FileElement.FileTreeManager;
 import com.lab.html_editor.model.htmlElement.HtmlDocument;
+import com.lab.html_editor.service.HtmlService;
 import com.lab.html_editor.service.spellcheck.SpellCheckService;
 import com.lab.html_editor.utils.command.ConsoleCommand;
 import com.lab.html_editor.utils.command.ConsoleCommandManager;
 import com.lab.html_editor.utils.command.workspace_command.ConsoleHtmlSaveFileCommand;
+import com.lab.html_editor.utils.strategy.HtmlIndentedRepresentation;
 
 import java.io.Console;
 import java.util.*;
 
-public class HtmlDocumentManager {
+public class HtmlDocumentManager implements Iterable<HtmlEditor>{
     private final Map<String, HtmlEditor> editors = new HashMap<>();
     private HtmlEditor activeEditor;
     private final HtmlController controller;
@@ -120,5 +125,51 @@ public class HtmlDocumentManager {
 
     public Map<String, HtmlEditor> getEditors(){
         return editors;
+    }
+
+    public boolean saveEditorToFile(HtmlEditor editor){
+        try{
+            var document=editor.getDocument();
+            var prevStrategy=document.getRepresentationStrategy();
+            document.setRepresentationStrategy(new HtmlIndentedRepresentation());
+            controller.getIOManager().write(document,editor.getFileNode().getAbsolutePath());
+            document.setRepresentationStrategy(prevStrategy);
+            editor.setUpdated(false);
+            editor.setFileExist(true);
+            editor.notifyObservers(new StatusEvent("Successfully write document to file", true));
+            return true;
+        }catch(Exception e){
+            editor.notifyObservers(new StatusEvent("Failed to save document to file", false,e));
+            return false;
+        }
+        
+    }
+
+    public boolean loadEditor(String filePath,FileTreeManager fileManager){
+        try{
+            AbstractFileNode node=fileManager.getNodeById(filePath);
+            if(node==null){
+                HtmlDocument newDocument=new HtmlDocument(FileTreeManager.getBasename(filePath), "new file", new HtmlService());
+                fileManager.addNode(filePath);
+                var editor=addEditor(newDocument,(FileNode)fileManager.getNodeById(filePath));
+                editor.setUpdated(true);
+                editor.setFileExist(false);
+                editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
+                
+            }else{
+                HtmlDocument document=controller.getIOManager().read(fileManager.resolvePath(filePath),new HtmlService());
+                var editor=addEditor(document,(FileNode)node);
+                editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
+            }
+            return true;
+        }catch(Exception e){
+            controller.handleStatusEvent(new StatusEvent("Failed to load document because "+e.getMessage(),false));
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<HtmlEditor> iterator() {
+        return editors.values().iterator();
     }
 }

@@ -206,7 +206,7 @@ public class HtmlController implements Observer{
         boolean changeSuccess=documentManager.removeActiveEditor();
         
         if(changeSuccess){
-            view.updateView(documentManager.getActiveEditor().getDocument());
+            view.updateView(documentManager.getActiveEditor());
             view.displayMessage("Editor closed");
             view.displayMessage("Switch active editor to "+documentManager.getActiveEditor().getFileNode().getName());
         }else{
@@ -218,7 +218,15 @@ public class HtmlController implements Observer{
 
     public void recordAndExit(){
         try{
-            HtmlEditorIO.saveEditors(documentManager.getEditors(), documentManager.getActiveEditor());
+            for(var targetEditor:documentManager){
+                if(targetEditor.isUpdated()){
+                    boolean saveEditor=parser.confirmCommand();
+                    if(saveEditor){
+                        documentManager.saveEditorToFile(targetEditor);
+                    }
+                }
+            }
+            HtmlEditorIO.saveEditors(documentManager, documentManager.getActiveEditor());
         }catch(IOException e){
             view.displayErrorMessage("Error Occurred when saving workspace info: "+e.getMessage());
         }
@@ -227,7 +235,7 @@ public class HtmlController implements Observer{
     public void restoreHistory(){
         try{
             HtmlEditorIO.loadEditors(this);
-            view.updateView(documentManager.getActiveDocument());
+            view.updateView(documentManager.getActiveEditor());
         }catch(IOException e){
             view.displayErrorMessage("Error Occurred when loading cached info: "+e.getMessage());
         }
@@ -242,7 +250,7 @@ public class HtmlController implements Observer{
         boolean isSuccessful=event.isSuccessful();
         String message=event.getMessage();
         documentManager.getActiveEditor().getAllEvents().add(event);
-        view.updateView(documentManager.getActiveEditor().getDocument());
+        view.updateView(documentManager.getActiveEditor());
         if(isSuccessful){
             view.displaySuccessMessage(message);
         }else{

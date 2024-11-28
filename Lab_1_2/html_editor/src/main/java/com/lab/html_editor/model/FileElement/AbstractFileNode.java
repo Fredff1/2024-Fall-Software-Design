@@ -17,11 +17,14 @@ public abstract class AbstractFileNode implements TreeNode,Decorative{
     protected String absolutePath;
     private final Map<DecoratorType,FileNodeDecorator> decorators=new HashMap<>();
     protected FileRepresentationStrategy strategy= new FileTreeRepresentation();//new FileTreeRepresentation();
+   
+
 
     public AbstractFileNode(String name,String absolutePath,TreeComposite father){
         this.father=father;
         this.name=name;
         this.absolutePath=absolutePath;
+
         addDecorator(new FileNodeUpdateStatusDecorator(this));
     }
 
@@ -33,6 +36,7 @@ public abstract class AbstractFileNode implements TreeNode,Decorative{
         return name;
     }
 
+  
     @Override
     public TreeComposite getFather() {
         return father;

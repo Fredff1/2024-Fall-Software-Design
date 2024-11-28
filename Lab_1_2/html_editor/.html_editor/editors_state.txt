@@ -1,5 +1,7 @@
-active_editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\5.txt
-editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\5.txt
+active_editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\7.txt
+editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\6.txt
 showid:true
 editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\3.txt
+showid:true
+editor:D:\Code\Java\2024 Fall Software Design\labs\Lab_1_2\html_editor\workspace\4.txt
 showid:true

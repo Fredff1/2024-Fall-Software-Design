@@ -26,7 +26,7 @@ public class HtmlEditorIO {
      * @param activeEditor 活动编辑器
      * @throws IOException 写入文件时发生错误
      */
-    public static void saveEditors(Map<String, HtmlEditor> editors, HtmlEditor activeEditor) throws IOException {
+    public static void saveEditors(HtmlDocumentManager manager, HtmlEditor activeEditor) throws IOException {
         // 创建文件夹
         Path folderPath = Paths.get(CONFIG_FOLDER);
         if (!Files.exists(folderPath)) {
@@ -48,8 +48,10 @@ public class HtmlEditorIO {
             }
 
             // 保存每个编辑器的信息
-            for (Map.Entry<String, HtmlEditor> entry : editors.entrySet()) {
-                HtmlEditor editor = entry.getValue();
+            for (var editor:manager) {
+                if(editor.isFileExist()==false){
+                    continue;
+                }
                 writer.write("editor:" + editor.getFileNode().getAbsolutePath());
                 writer.newLine();
                 writer.write("showid:" + editor.isShowId());

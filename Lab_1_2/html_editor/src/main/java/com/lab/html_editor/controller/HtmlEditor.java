@@ -25,6 +25,7 @@ public class HtmlEditor implements Observer, Observable{
     private final List<Observer> observers=new ArrayList<>();
     private boolean updated=false;
     private boolean showId=true;
+    private boolean fileExist=true;
 
     public HtmlEditor(HtmlDocument document,FileNode node) {
         this.document = document;
@@ -33,6 +34,19 @@ public class HtmlEditor implements Observer, Observable{
         commandManager.addObserver(this);
         document.addObserver(this);
         this.events = new LinkedList<>();
+    }
+
+    public HtmlEditor(HtmlDocument document,FileNode node,boolean fileExist) {
+        this(document, node);
+        this.fileExist=fileExist;
+    }
+
+    public void setFileExist(boolean fileExist){
+        this.fileExist=fileExist;
+    }
+
+    public boolean isFileExist(){
+        return this.fileExist;
     }
 
     public void setShowId(boolean showId){

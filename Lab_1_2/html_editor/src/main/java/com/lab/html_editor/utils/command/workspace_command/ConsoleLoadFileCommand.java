@@ -24,27 +24,7 @@ public class ConsoleLoadFileCommand extends ConsoleWorkspaceCommand{
 
     @Override
     public boolean execute(){
-        try{
-            AbstractFileNode node=manager.getNodeById(filePath);
-            if(node==null){
-                HtmlDocument newDocument=new HtmlDocument(FileTreeManager.getBasename(filePath), "new file", new HtmlService());
-                manager.addNode(filePath);
-                var editor=controller.getDocumentManager().addEditor(newDocument,(FileNode)manager.getNodeById(filePath));
-                editor.setUpdated(true);
-                editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
-                
-            }else{
-                HtmlDocument document=controller.getIOManager().read(manager.resolvePath(filePath),new HtmlService());
-                var editor=controller.getDocumentManager().addEditor(document,(FileNode)node);
-                editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
-            }
-            return true;
-        }catch(Exception e){
-            controller.handleStatusEvent(new StatusEvent("Failed to load document because "+e.getMessage(),false));
-            return false;
-
-        }
-        
+        return controller.getDocumentManager().loadEditor(filePath, manager); 
     }
 
     @Override

@@ -33,7 +33,10 @@ public abstract class IndentedRepresentation implements RepresentationStrategy{
         String indent = " ".repeat(indentLevel);  // 缩进处理
 
         // 开始标签
-        sb.append("\n").append(indent);
+        if(indent.isEmpty()==false){
+            sb.append("\n").append(indent);
+        }
+        
         sb.append(adapter.getPrefix());
         
 
@@ -79,7 +82,7 @@ public abstract class IndentedRepresentation implements RepresentationStrategy{
     protected String toString(Adapter element,int indentLevel){
         String str="";
         if(element instanceof IndentCompositeProvider){
-            str=toStringCompositeHelper(element, indentLevel, indentLevel);
+            str=toStringCompositeHelper(element, 0, indentLevel);
         }else if(element instanceof IndentLeafProvider){
             str=toStringRepresentationLeaf(element, indentLevel);
         }
