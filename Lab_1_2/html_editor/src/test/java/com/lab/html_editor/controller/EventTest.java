@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.lab.html_editor.controller.events.StatusEvent;
 import com.lab.html_editor.controller.exceptions.RedoFailedException;
 import com.lab.html_editor.controller.exceptions.UndoFailedException;
+import com.lab.html_editor.model.FileElement.FileNode;
 import com.lab.html_editor.model.exceptions.HtmlAppendExcption;
 import com.lab.html_editor.model.exceptions.HtmlDeleteException;
 import com.lab.html_editor.model.exceptions.HtmlEditFailException;
@@ -29,7 +30,7 @@ public class EventTest {
     public void setUp(){
         controller=new HtmlController(new HtmlView(), new SpellCheckService());
         documentManager=controller.getDocumentManager();
-        controller.getDocumentManager().addEditor(new HtmlDocument("a", "a", new HtmlService()), null);
+        controller.loadFile("50.txt");
     }
 
     @Test

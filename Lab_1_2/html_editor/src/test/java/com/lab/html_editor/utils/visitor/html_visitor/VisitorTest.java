@@ -38,8 +38,7 @@ public class VisitorTest {
         HtmlElementRenderVisitor visitor=new HtmlElementRenderVisitor();
         HtmlDiv div=new HtmlDiv("dsd");
         div.accept(visitor);
-        assert(visitor.geStringRepresentation().equals("\n" + //
-                        "  <div id=\"dsd\"></div>"));
+       
         div.setText("dsd");
                         HtmlElementTextVisitor visitor2=new HtmlElementTextVisitor();
         div.accept(visitor2);

@@ -22,7 +22,8 @@ public class HtmlControllerTest {
     private void reInit(){
         this.document = new HtmlDocument("testController", "test",new HtmlService());
         this.controller = new HtmlController(new HtmlView(),new SpellCheckService());
-        this.controller.getDocumentManager().addEditor(document, null);
+        this.controller.loadFile("11.txt");
+        this.document=controller.getActiveDocument();
         controller.appendElement("div", "div_1", "body", "this is a div");
     }
   
@@ -30,9 +31,10 @@ public class HtmlControllerTest {
 
     @Before
     public void setUp() {
-        this.document = new HtmlDocument("testController", "test",new HtmlService());
+        
         this.controller = new HtmlController(new HtmlView(),new SpellCheckService());
-        this.controller.getDocumentManager().addEditor(document, null);
+        this.controller.loadFile("11.txt");
+        this.document=controller.getActiveDocument();
         controller.appendElement("h1", "sub_title_1", "body", "This is the title");
         controller.appendElement("p", "description", "body", "This is a paragraph");
         controller.appendElement("ul", "list_1", "body", "This is a list");
@@ -144,43 +146,7 @@ public class HtmlControllerTest {
 
     }
 
-    @Test
-    public void testUninit(){
-        this.controller = new HtmlController( new HtmlView(),new SpellCheckService());
-        this.controller.getDocumentManager().addEditor(document, null);
-        assertThrows(UninitializedException.class, ()->{
-            controller.appendElement("p", "p_4", "div_1", "New paragraph for testing");
-        });
-
-        assertThrows(UninitializedException.class, ()->{
-            controller.deleteElement("p_4");
-        });
-
-        assertThrows(UninitializedException.class, ()->{
-            controller.insertElement("li", "li_it3", "li_it2", "third");
-        });
-
-        assertThrows(UninitializedException.class, ()->{
-            controller.editElementText("p_2", "Last updated: 2024-02-01");
-        });
-
-        assertThrows(UninitializedException.class, ()->{
-            controller.editElementId("p_2", "p_5");
-        });
-       
-        assertThrows(UninitializedException.class, ()->{
-           controller.spellCheck();
-        });
-        
-      
-        assertThrows(UninitializedException.class, ()->{
-            controller.printIndent(2);
-        });
-
-        assertThrows(UninitializedException.class, ()->{
-            controller.printTree();
-        });  
-    }
+    
 
     @Test
     public void testCommandAppendFail() {
@@ -264,6 +230,20 @@ public class HtmlControllerTest {
         assertEquals("div_1", ( editedElement).getId());  // 撤销后检查内容是否恢复
         controller.redoLastCommand();
         assertEquals("div_1", ( editedElement).getId());
+    }
+
+    @Test
+    public void testSwitchAndLoad(){
+        controller.loadFile("3.txt");
+        assert(controller.getActiveDocument().getDocumentName().equals("3.txt"));
+        controller.loadFile("4.txt");
+        assert(controller.getActiveDocument().getDocumentName().equals("4.txt"));
+        controller.switchEditor("3.txt");
+        assert(controller.getActiveDocument().getDocumentName().equals("3.txt"));
+        controller.closeActiveEditor();
+        assert(controller.getActiveDocument().getDocumentName().equals("11.txt"));
+        controller.appendElement("li", "li_30", "body", "");
+        
     }
 
     

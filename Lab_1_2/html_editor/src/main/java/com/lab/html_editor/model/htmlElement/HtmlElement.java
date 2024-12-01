@@ -31,8 +31,7 @@ public abstract class HtmlElement implements HtmlVisitable,TreeNode,Decorative{
      public HtmlElement(String id,String tagName){
         this.setId(id);
         this.tagName=new HtmlTagName(tagName);
-        addDecorator(new HtmlSpellCheckDecorator(this));
-        addDecorator(new HtmlShowIdDecorator(this, true));
+
     }
 
    

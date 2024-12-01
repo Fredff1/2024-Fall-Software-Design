@@ -9,6 +9,8 @@ import com.lab.html_editor.model.exceptions.HtmlServiceSearchException;
 import com.lab.html_editor.model.exceptions.HtmlSetChildException;
 import com.lab.html_editor.model.htmlElement.HtmlComposite;
 import com.lab.html_editor.model.htmlElement.HtmlElement;
+import com.lab.html_editor.utils.decorator.HtmlShowIdDecorator;
+import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 import com.lab.html_editor.utils.factory.html_factory.BasicHtmlFactory;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlElementIdUpdateVisitor;
 import com.lab.html_editor.utils.visitor.html_visitor.HtmlElementTextUpdateVisitor;
@@ -56,6 +58,8 @@ public class HtmlService {
         // 将元素注册到IDManager并存储到elementMap
         
         elementMap.put(id, element);
+        element.addDecorator(new HtmlSpellCheckDecorator(element));
+        element.addDecorator(new HtmlShowIdDecorator(element, true));
         return element;
     }
 

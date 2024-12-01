@@ -25,13 +25,14 @@ import com.lab.html_editor.view.HtmlView;
 
 public class testCommand {
     private ConsoleCommandManager manager = new ConsoleCommandManager();
-    private HtmlDocument document = new HtmlDocument("a", "a", new HtmlService());
+    private HtmlDocument document = null;
     private HtmlView view = new HtmlView();
     private HtmlController controller = new HtmlController(view,new SpellCheckService());
 
     @Before
     public void setUp() {
-        controller.getDocumentManager().addEditor(document,null);
+        controller.loadFile("111.txt");
+        document=controller.getActiveDocument();
     }
 
     @Test

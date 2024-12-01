@@ -14,10 +14,11 @@ import com.lab.html_editor.utils.adapter.provider.IndentContentProvider;
 import com.lab.html_editor.utils.decorator.DecoratorType;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
-public class IndentHtmlCompositeAdapter extends IndentCompositeProvider implements Adapter{
-    
-    public IndentHtmlCompositeAdapter(TreeNode node){
-        super(node);
+public class IndentHtmlCompositeAdapter  implements Adapter,IndentCompositeProvider{
+    private HtmlComposite node;
+
+    public IndentHtmlCompositeAdapter(HtmlComposite node){
+        this.node=node;
     }
     
     public String getPrefix(){

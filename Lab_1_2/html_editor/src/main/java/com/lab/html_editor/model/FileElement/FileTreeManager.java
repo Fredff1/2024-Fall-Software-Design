@@ -3,10 +3,13 @@ import java.io.File;
 import java.util.*;
 
 import com.lab.html_editor.model.TreeNode;
+import com.lab.html_editor.utils.decorator.FileNodeUpdateStatusDecorator;
+import com.lab.html_editor.utils.factory.file_node_factory.FileNodeFactory;
 
 public class FileTreeManager {
     private DirectoryNode root;
     private final String rootPath; 
+    private final FileNodeFactory factory=new FileNodeFactory();
     private final Map<String, AbstractFileNode> nodeIndex = new HashMap<>();
 
     public FileTreeManager(String directoryPath) {
@@ -46,7 +49,7 @@ public class FileTreeManager {
         if (!rootFile.exists() || !rootFile.isDirectory()) {
             throw new IllegalArgumentException("Invalid directory path: " + rootPath);
         }
-        DirectoryNode rootNode = new DirectoryNode(rootFile.getName(),rootFile.getPath());
+        DirectoryNode rootNode=(DirectoryNode)factory.createComponent("directory",rootFile.getName(),rootFile.getPath());
         nodeIndex.put(rootPath, rootNode);
         buildTreeRecursive(rootFile, rootNode);
         return rootNode;
@@ -70,12 +73,12 @@ public class FileTreeManager {
         for (File file : files) {
             String absolutePath = file.getAbsolutePath(); // 使用绝对路径作为 ID
             if (file.isDirectory()) {
-                DirectoryNode dirNode = new DirectoryNode(file.getName(),file.getAbsolutePath(), parentNode);
+                DirectoryNode dirNode=(DirectoryNode)factory.createComponent("directory",file.getName(),file.getAbsolutePath());
                 parentNode.addChild(dirNode);
                 nodeIndex.put(absolutePath, dirNode); // 添加到索引
                 buildTreeRecursive(file, dirNode);
             } else {
-                FileNode fileNode = new FileNode(file.getName(),file.getAbsolutePath(), parentNode);
+                FileNode fileNode = (FileNode)factory.createComponent("file",file.getName(),file.getAbsolutePath());
                 parentNode.addChild(fileNode);
                 nodeIndex.put(absolutePath, fileNode); // 添加到索引
             }
@@ -102,11 +105,11 @@ public class FileTreeManager {
     
         // 添加新节点
         if (file.isDirectory()) {
-            DirectoryNode dirNode = new DirectoryNode(file.getName(),file.getAbsolutePath(), parentNode);
+            DirectoryNode dirNode=(DirectoryNode)factory.createComponent("directory",file.getName(),file.getAbsolutePath());
             parentNode.addChild(dirNode);
             nodeIndex.put(absolutePath, dirNode);
         } else {
-            FileNode fileNode = new FileNode(file.getName(),file.getAbsolutePath(), parentNode);
+            FileNode fileNode = (FileNode)factory.createComponent("file",file.getName(),file.getAbsolutePath());
             parentNode.addChild(fileNode);
             nodeIndex.put(absolutePath, fileNode);
         }

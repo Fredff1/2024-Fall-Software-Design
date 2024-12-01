@@ -14,10 +14,10 @@ import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
 import java.util.List;
 
-public class TreeDirectoryAdapter extends TreeCompositeProvider implements Adapter{
-    
+public class TreeDirectoryAdapter implements Adapter,TreeCompositeProvider{
+    private DirectoryNode node;
     public TreeDirectoryAdapter(DirectoryNode composite){
-        super(composite);
+        this.node=composite;
        
     }
 

@@ -14,10 +14,10 @@ import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
 import java.util.List;
 
-public class IndentDirectoryAdapter extends IndentCompositeProvider implements Adapter{
-    
-    public IndentDirectoryAdapter(TreeNode node){
-        super(node);
+public class IndentDirectoryAdapter implements IndentCompositeProvider,Adapter{
+    private DirectoryNode node;
+    public IndentDirectoryAdapter(DirectoryNode node){
+        this.node=node;
     }
     
     public String getPrefix(){

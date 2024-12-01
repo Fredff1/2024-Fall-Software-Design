@@ -4,10 +4,8 @@ import com.lab.html_editor.model.TreeLeaf;
 import com.lab.html_editor.model.TreeNode;
 import com.lab.html_editor.model.htmlElement.concreteHtmlElements.HtmlText;
 
-public abstract class TreeLeafProvider extends TreeContentProvider<TreeLeaf>{
-    public TreeLeafProvider(TreeNode node){
-        super(node);
-    }
+public interface TreeLeafProvider extends TreeContentProvider<TreeLeaf>{
+   
 
     public abstract boolean isTextNode();
 }

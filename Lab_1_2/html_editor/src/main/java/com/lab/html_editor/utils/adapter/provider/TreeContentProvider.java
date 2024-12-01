@@ -2,10 +2,6 @@ package com.lab.html_editor.utils.adapter.provider;
 
 import com.lab.html_editor.model.TreeNode;
 
-public abstract class TreeContentProvider<T> implements FeatureProvider<T>,TextProvider<T>{
-    protected TreeNode node;
+public interface TreeContentProvider<T> extends FeatureProvider<T>,TextProvider<T>{
     
-    public TreeContentProvider(TreeNode node){
-        this.node=node;
-    }
 }

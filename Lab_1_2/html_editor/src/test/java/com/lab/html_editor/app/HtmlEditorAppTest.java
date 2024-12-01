@@ -35,7 +35,7 @@ public class HtmlEditorAppTest {
 
     @Test
     public void testNormalCommand(){
-        app.simulateInput("init");
+        app.simulateInput("load 30.txt");
         HtmlDocument document=controller.getActiveDocument();
         app.simulateInput("append li li_1 body Li 1");
         assert(document.search("li_1").getText().equals("Li 1"));
@@ -65,16 +65,30 @@ public class HtmlEditorAppTest {
     }
 
     @Test
-    public void testIoCommand(){
-        app.simulateInput("init");
-        app.simulateInput("read 3.txt");
-        app.simulateInput("edit-text body Body");
-        String text=app.getController().getActiveDocument().toHtmlString(2);
-        app.simulateInput("save 4.txt");
-        app.simulateInput("read 4.txt");
-        String text_2=app.getController().getActiveDocument().toHtmlString(2);
-        assertEquals(text,text_2);
+    public void testFileOperations(){
+        app.simulateInput("load 4.txt");
+        app.simulateInput("load 5.txt");
+        app.simulateInput("close");
+        assert(app.getController().getActiveDocument().getDocumentName().equals("4.txt"));
+        app.simulateInput("load 5.txt");
+        app.simulateInput("exit");
+        app.setIsRunning(true);
+        assert(app.getController().getActiveDocument().getDocumentName().equals("5.txt"));
+        assert(app.getController().getDocumentManager().getEditors().entrySet().size()==2);
+        app.simulateInput("edit 4.txt");
+        assert(app.getController().getActiveDocument().getDocumentName().equals("4.txt"));
+        app.simulateInput("load test.html");
+        app.simulateInput("showid false");
+        assert(app.getController().getDocumentManager().getActiveEditor().isShowId()==false);
+        app.simulateInput("save");
+        app.simulateInput("load test.html");
+        assert(app.getController().getDocumentManager().getActiveEditor().isUpdated()==false);
+        assert(app.getController().getDocumentManager().getActiveEditor().isShowId()==false);
+
+
     }
+
+
 
     
 

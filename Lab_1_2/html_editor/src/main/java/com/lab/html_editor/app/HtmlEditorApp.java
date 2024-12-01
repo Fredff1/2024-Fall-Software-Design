@@ -38,15 +38,12 @@ public class HtmlEditorApp {
         view.displayWelComeStage();
         controller.restoreHistory();
         while (isRunning) {
-            
             try{
                 parser.parseCommand(); 
             }catch(Exception e){
                 view.displayErrorMessage(e.getMessage());
             }
-            
         }
-       
     }
 
 

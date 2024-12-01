@@ -11,10 +11,10 @@ import com.lab.html_editor.utils.decorator.HtmlShowIdDecorator;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 import com.lab.html_editor.utils.adapter.provider.*;
 
-public class TreeHtmlLeafAdapter extends TreeLeafProvider implements Adapter{
-
+public class TreeHtmlLeafAdapter  implements Adapter,TreeLeafProvider{
+    private HtmlLeaf node;
     public TreeHtmlLeafAdapter(HtmlLeaf leaf){
-        super(leaf);
+        this.node=leaf;
 
     }
 

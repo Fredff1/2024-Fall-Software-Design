@@ -24,7 +24,7 @@ public class HtmlEditorCommandParser {
         this.view = view;
         this.app=app;
         this.scanner=new Scanner(System.in);
-        commandMap=new HashMap<>();
+        commandMap=new LinkedHashMap<>();
         initCommandMap();
     }
 
@@ -162,8 +162,8 @@ public class HtmlEditorCommandParser {
             }
             controller.appendElement(tagName, targetId, parentId, content);
         } else {
-            view.displayMessage("Invalid append command format.");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid append command format.");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -179,8 +179,8 @@ public class HtmlEditorCommandParser {
             }
             controller.insertElement(tagName, targetId, brotherId, content);
         } else {
-            view.displayMessage("Invalid insert command format.");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid insert command format.");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -189,8 +189,8 @@ public class HtmlEditorCommandParser {
             String targetId = parts[1];
             controller.deleteElement(targetId);
         } else {
-            view.displayMessage("Invalid delete command format.");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid delete command format.");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -200,8 +200,8 @@ public class HtmlEditorCommandParser {
             String newId = parts[2];
             controller.editElementId(oldId, newId);
         } else {
-            view.displayMessage("Invalid edit-id command format.");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid edit-id command format.");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -216,8 +216,8 @@ public class HtmlEditorCommandParser {
              
             controller.editElementText(targetId, targetContent);
         } else {
-            view.displayMessage("Ivalid edit-content format");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Ivalid edit-content format");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -238,8 +238,8 @@ public class HtmlEditorCommandParser {
             controller.loadFile(path);
 
         } else {
-            view.displayMessage("Invalid read command");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid read command");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -247,8 +247,8 @@ public class HtmlEditorCommandParser {
         if (parts.length >= 1) {
             controller.saveFile();
         } else {
-            view.displayMessage("Invalid save command");
-            view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+            view.displayErrorMessage("Invalid save command");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
     }
 
@@ -278,7 +278,7 @@ public class HtmlEditorCommandParser {
 
     private void handleHelp(String commandLine,String[] parts){
         view.displaySplitLine();
-        view.displayMessage("Available Commands: ");
+        view.displayInfo("Available Commands: ");
         for(var cmd:commandMap.values()){
             view.displayMessage(cmd);
         }
@@ -300,8 +300,8 @@ public class HtmlEditorCommandParser {
             try{
                 indent=Integer.parseInt(indentStr);
             }catch(Exception e){
-                view.displayMessage("Invalid save command");
-                view.displayMessage("Correct format: "+commandMap.get(parts[0]));
+                view.displayErrorMessage("Invalid save command");
+                view.displayInfo("Correct format: "+commandMap.get(parts[0]));
             }
         }
         controller.printDirIndent(indent);
@@ -313,7 +313,8 @@ public class HtmlEditorCommandParser {
             path=parts[1];
             controller.switchEditor(path);
         }else{
-
+            view.displayErrorMessage("Invalid edit format");
+            view.displayInfo("Correct format: "+commandMap.get(parts[0]));
         }
         
            
@@ -334,13 +335,19 @@ public class HtmlEditorCommandParser {
         commandMap.put("edit-text","edit-text id [newTextContent]");
         commandMap.put("undo","undo");
         commandMap.put("redo","redo");
-        commandMap.put("init","init [filename] [title]");
-        commandMap.put("read", "read filepath");
-        commandMap.put("save", "save filepath");
+        commandMap.put("load","load [path to file (relative or absolute(must in workspace))] [title]");
+        commandMap.put("save", "save ");
+        commandMap.put("edit", "edit filepath(relative or absolute)");
+        commandMap.put("close", "close");
         commandMap.put("print-indent", "print-indent [indent]");
         commandMap.put("print-tree", "print-tree");
+        commandMap.put("showid", "showid [true/false]");
+        commandMap.put("help", "help");
+        commandMap.put("editor-list", "editor-list");
+        commandMap.put("dir-tree", "dir-tree");
+        commandMap.put("dir-indent", "dir-indent");
         commandMap.put("spell-check", "spell-check");
-        commandMap.put("edit", "edit filepath(relative or absolute)");
+        commandMap.put("exit", "exit");
     }
 
 

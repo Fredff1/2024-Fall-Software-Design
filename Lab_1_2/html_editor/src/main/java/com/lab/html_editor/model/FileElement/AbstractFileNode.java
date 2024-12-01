@@ -25,7 +25,7 @@ public abstract class AbstractFileNode implements TreeNode,Decorative{
         this.name=name;
         this.absolutePath=absolutePath;
 
-        addDecorator(new FileNodeUpdateStatusDecorator(this));
+        
     }
 
     public String getAbsolutePath(){

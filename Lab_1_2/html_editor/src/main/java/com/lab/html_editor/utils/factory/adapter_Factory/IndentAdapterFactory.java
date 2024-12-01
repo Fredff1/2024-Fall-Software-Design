@@ -14,13 +14,13 @@ import com.lab.html_editor.utils.adapter.provider.Adapter;
 public class IndentAdapterFactory {
     public static Adapter createAdapter(TreeNode node){
         if(node instanceof HtmlComposite){
-            return new IndentHtmlCompositeAdapter(node);
+            return new IndentHtmlCompositeAdapter((HtmlComposite)node);
         }else if(node instanceof HtmlLeaf){
-            return new IndentHtmlLeafAdapter(node);
+            return new IndentHtmlLeafAdapter((HtmlLeaf)node);
         }else if(node instanceof DirectoryNode){
-            return new IndentDirectoryAdapter(node);
+            return new IndentDirectoryAdapter((DirectoryNode)node);
         }else if(node instanceof FileNode){
-            return new IndentFileLeafAdapter(node);
+            return new IndentFileLeafAdapter((FileNode)node);
         }else{
             return null;
         }

@@ -24,7 +24,14 @@ public class ConsoleLoadFileCommand extends ConsoleWorkspaceCommand{
 
     @Override
     public boolean execute(){
-        return controller.getDocumentManager().loadEditor(filePath, manager); 
+        try{
+            var editor=controller.getDocumentManager().loadEditor(filePath, manager);
+            editor.notifyObservers(new StatusEvent("Successfully load file from "+filePath,true));
+            return true;
+        }catch(Exception e){
+            controller.handleStatusEvent(new StatusEvent("Failed to load document because "+e.getMessage(),false));
+            return false;
+        }
     }
 
     @Override

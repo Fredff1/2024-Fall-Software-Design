@@ -25,7 +25,14 @@ public class ConsoleHtmlSaveFileCommand implements ConsoleCommand{
 
     @Override
     public boolean execute(){
-        return controller.getDocumentManager().saveEditorToFile(editor);
+        try{
+            controller.getDocumentManager().saveEditorToFile(editor);
+            editor.notifyObservers(new StatusEvent("Successfully write document to file", true));
+            return true;
+        }catch(Exception e){
+            editor.notifyObservers(new StatusEvent("Failed to save document to file", false,e));
+            return false;
+        }
     }
 
     @Override

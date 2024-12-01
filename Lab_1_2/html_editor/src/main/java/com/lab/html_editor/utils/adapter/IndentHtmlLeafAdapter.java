@@ -15,10 +15,11 @@ import com.lab.html_editor.utils.adapter.provider.IndentLeafProvider;
 import com.lab.html_editor.utils.decorator.DecoratorType;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
-public class IndentHtmlLeafAdapter extends IndentLeafProvider implements Adapter{
-    
-    public IndentHtmlLeafAdapter(TreeNode node){
-        super(node);
+public class IndentHtmlLeafAdapter implements Adapter,IndentLeafProvider{
+    private HtmlLeaf node;
+
+    public IndentHtmlLeafAdapter(HtmlLeaf node){
+        this.node=node;
     }
 
     public boolean isTextNode(){
@@ -51,7 +52,7 @@ public class IndentHtmlLeafAdapter extends IndentLeafProvider implements Adapter
     }
     
     public String getFeature(){
-        HtmlComposite composite=(HtmlComposite)node;
+        HtmlLeaf composite=(HtmlLeaf)node;
         StringBuilder builder=new StringBuilder();
         builder.append(composite.getTagName().getTagString());
         HtmlSpellCheckDecorator decorator=(HtmlSpellCheckDecorator)composite.getDecorator(DecoratorType.HTML_SPELLCHECK_DECORATOR);

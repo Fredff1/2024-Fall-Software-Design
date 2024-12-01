@@ -31,7 +31,7 @@ public class HtmlView implements Observable{
     }
 
     public void displaySplitLine(){
-        System.out.println("-".repeat(100));
+        System.out.println("-".repeat(125));
     }
 
     public void clearConsole() {
@@ -57,6 +57,10 @@ public class HtmlView implements Observable{
         System.out.println(message);
     }
 
+    public void displayInfo(String message){
+        System.out.println("[Info] "+message);
+    }
+
     public void displayWorkspaceFolder(String message){
         displaySplitLine();
         displayDefault("Current workspace directory: ");
@@ -72,13 +76,18 @@ public class HtmlView implements Observable{
 
     
     public void updateView(HtmlEditor editor) {
+        if(editor==null){
+            displayInfo("No Editor to show");
+            return;
+        }
         var document=editor.getDocument();
         clearConsole();
         var visitor = document.getRenderInfo();
         String renderedContent = visitor.geStringRepresentation();
         displaySplitLine();
-        System.out.println("Current Document :");
-        System.out.println("[Document name]:"+editor.getFileNode().getName());
+        System.out.println("[Current Document]");
+        System.out.println("[Document name] "+editor.getFileNode().getName());
+        System.out.println("[Update status] "+editor.isUpdated());
         displaySplitLine();
         System.out.println(renderedContent+"\n");
         displaySplitLine();

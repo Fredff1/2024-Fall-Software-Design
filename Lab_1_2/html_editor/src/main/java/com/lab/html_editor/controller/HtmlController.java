@@ -135,9 +135,12 @@ public class HtmlController implements Observer{
 
     public void listEditors(){
         var editors=documentManager.getEditors();
+        view.displaySplitLine();
+        view.displayInfo("[Active Editors]");
         for(var editor:editors.values()){
-            view.displayMessage(editor.toString());
+            view.displayInfo(editor.toString());
         }
+        view.displaySplitLine();
     }
 
     public void printCommandForTest(){
@@ -189,8 +192,14 @@ public class HtmlController implements Observer{
 
     public void switchEditor(String path){
         String absolutePath=fileTreeManager.resolvePath(path);
-        documentManager.setActiveEditor(absolutePath);
-        documentManager.getActiveEditor().notifyObservers(new StatusEvent("Switch to active file "+absolutePath, true));
+        boolean switchSuccess=false;
+        switchSuccess=documentManager.setActiveEditor(absolutePath);
+        if(switchSuccess){
+            documentManager.getActiveEditor().notifyObservers(new StatusEvent("Switch to active file "+absolutePath, true));
+        }else{
+            documentManager.getActiveEditor().notifyObservers(new StatusEvent("Failed to switch to file "+absolutePath+" check if the file is loaded", false));
+        }
+        
     }
 
     public void closeActiveEditor(){
@@ -207,12 +216,12 @@ public class HtmlController implements Observer{
         
         if(changeSuccess){
             view.updateView(documentManager.getActiveEditor());
-            view.displayMessage("Editor closed");
-            view.displayMessage("Switch active editor to "+documentManager.getActiveEditor().getFileNode().getName());
+            view.displayInfo("Editor closed");
+            view.displayInfo("Switch active editor to "+documentManager.getActiveEditor().getFileNode().getName());
         }else{
             view.clearConsole();
-            view.displayMessage("Editor closed");
-            view.displayMessage("There are no active editors now");
+            view.displayInfo("Editor closed");
+            view.displayInfo("There are no active editors now");
         }
     }
 
@@ -220,9 +229,14 @@ public class HtmlController implements Observer{
         try{
             for(var targetEditor:documentManager){
                 if(targetEditor.isUpdated()){
+                    view.displayMessage("Do you want to save file "+targetEditor.getFileNode().getAbsolutePath()+" [yes/no]?");
+                    view.displayMessageInOneLine("");
                     boolean saveEditor=parser.confirmCommand();
                     if(saveEditor){
                         documentManager.saveEditorToFile(targetEditor);
+                        view.displayInfo("Saving file to "+targetEditor.getFileNode().getAbsolutePath());
+                    }else{
+                        view.displayInfo("Discarding file "+targetEditor.getFileNode().getAbsolutePath());
                     }
                 }
             }
@@ -236,8 +250,9 @@ public class HtmlController implements Observer{
         try{
             HtmlEditorIO.loadEditors(this);
             view.updateView(documentManager.getActiveEditor());
+            view.displayInfo("History restored");
         }catch(IOException e){
-            view.displayErrorMessage("Error Occurred when loading cached info: "+e.getMessage());
+            view.displayErrorMessage("Error Occurred when loading cached history: "+e.getMessage());
         }
     }
 
@@ -252,9 +267,8 @@ public class HtmlController implements Observer{
         documentManager.getActiveEditor().getAllEvents().add(event);
         view.updateView(documentManager.getActiveEditor());
         if(isSuccessful){
-            view.displaySuccessMessage(message);
+            view.displayInfo(message);
         }else{
-            //view.displayMessage("An Error Occurred :");
             view.displayErrorMessage(message);
         }
         view.displaySplitLine();
@@ -268,7 +282,7 @@ public class HtmlController implements Observer{
     public void handleUnknownCommand(String command,Set<String> commandKeys){
         view.displayErrorMessage("Unknown command: " + command);
         String closest=spellCheckService.findClosestCommand(command, commandKeys);
-        if(closest!="None"){
+        if(closest.equals("None")==false){
             view.displayMessage("The closest command is "+closest);
         }
     }

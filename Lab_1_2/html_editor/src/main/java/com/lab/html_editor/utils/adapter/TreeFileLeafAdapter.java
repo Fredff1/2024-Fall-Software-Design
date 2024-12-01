@@ -10,10 +10,10 @@ import com.lab.html_editor.utils.decorator.FileNodeUpdateStatusDecorator;
 import com.lab.html_editor.utils.decorator.HtmlShowIdDecorator;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
-public class TreeFileLeafAdapter extends TreeLeafProvider implements Adapter{
-    
+public class TreeFileLeafAdapter  implements Adapter,TreeLeafProvider{
+    private FileNode node;
     public TreeFileLeafAdapter(FileNode leaf){
-        super(leaf);
+        this.node=leaf;
 
     }
 

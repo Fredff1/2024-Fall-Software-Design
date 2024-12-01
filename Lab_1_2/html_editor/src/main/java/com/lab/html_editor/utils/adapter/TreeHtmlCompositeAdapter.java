@@ -12,10 +12,10 @@ import com.lab.html_editor.utils.adapter.provider.*;
 
 import java.util.*;
 
-public class TreeHtmlCompositeAdapter extends TreeCompositeProvider implements Adapter{  
-
+public class TreeHtmlCompositeAdapter implements Adapter,TreeCompositeProvider{  
+    private HtmlComposite node;
     public TreeHtmlCompositeAdapter(HtmlComposite composite){
-        super(composite);
+        this.node=composite;
        
     }
 

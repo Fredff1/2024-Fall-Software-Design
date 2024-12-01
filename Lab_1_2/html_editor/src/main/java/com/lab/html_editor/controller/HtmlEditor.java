@@ -95,6 +95,13 @@ public class HtmlEditor implements Observer, Observable{
         decorator.setUpdateStatus(flag);
     }
 
+    public void setUpdated(boolean flag,StatusEvent statusEvent){
+        updated=flag;
+        FileNodeUpdateStatusDecorator decorator=(FileNodeUpdateStatusDecorator)fileNode.getDecorator(DecoratorType.FILE_NODE_UPDATE_STATUS_DECORATOR);
+        decorator.setUpdateStatus(flag);
+        notifyObservers(statusEvent);
+    }
+
 
     public StatusEvent getLastStatusEvent(){
         Iterator<Event> reverseIterator = events.descendingIterator(); // 获取反向迭代器
@@ -112,7 +119,7 @@ public class HtmlEditor implements Observer, Observable{
         if(command instanceof ConsoleUpdateCommand){
             var status=getLastStatusEvent();
             if(status.isSuccessful()){
-                setUpdated(true);
+                setUpdated(true,status);
             }
         }
     }
@@ -121,7 +128,7 @@ public class HtmlEditor implements Observer, Observable{
         commandManager.redo();
         var status=getLastStatusEvent();
         if(status.isSuccessful()){
-            setUpdated(true);
+            setUpdated(true,status);
         }
     }
 
@@ -129,7 +136,7 @@ public class HtmlEditor implements Observer, Observable{
         commandManager.undo();
         var status=getLastStatusEvent();
         if(status.isSuccessful()&&commandManager.isUndoStackEmpty()){
-            setUpdated(false);
+            setUpdated(false,status);
         }
     }
 

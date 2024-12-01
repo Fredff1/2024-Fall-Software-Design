@@ -14,10 +14,10 @@ import com.lab.html_editor.utils.decorator.DecoratorType;
 import com.lab.html_editor.utils.decorator.FileNodeUpdateStatusDecorator;
 import com.lab.html_editor.utils.decorator.HtmlSpellCheckDecorator;
 
-public class IndentFileLeafAdapter extends IndentLeafProvider implements Adapter{
-    
-    public IndentFileLeafAdapter(TreeNode node){
-        super(node);
+public class IndentFileLeafAdapter implements Adapter,IndentLeafProvider{
+    private FileNode node;
+    public IndentFileLeafAdapter(FileNode node){
+        this.node=node;
     }
 
     public boolean isTextNode(){
