@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.lab.html_editor.controller.EventTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.336 s - in com.lab.html_editor.controller.EventTest

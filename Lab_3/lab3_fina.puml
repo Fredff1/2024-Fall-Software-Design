@@ -1,0 +1,138 @@
+@startuml !
+title Domain Model of Property Repair Management System
+
+
+
+class RepairWorker {
+  - workerId
+}
+
+class Skills{
+  - skillType
+}
+
+class Schedule{
+  //工人的活动记录和未来的工作安排
+}
+
+Skills "1..*" -- "1..*" RepairWorker : has
+Skills "1..*" -- "1..*" FaultType : caters to
+Schedule "1" -- "1..*" RepairWorker : has
+
+class Dispatcher {
+  - dispatcherId
+}
+
+class SingleTask {
+
+}
+
+class Manager{
+  - managerId
+}
+
+class Customer{
+  - residentId  报修人
+  - history 报修和投诉的历史
+}
+
+'class RepairInformation{
+'  - createdTime: DateTime //报修时间
+'  - description: String //故障内容
+'  - Customer //上报故障的业主
+'  - faultSource //故障来源
+'}
+
+class RepairTask {
+  - taskId
+  - status
+  - createdTime
+  - description 内容
+  - faultSource
+  - address
+}
+
+RepairTask "1..*" -- "1..*" Customer : report
+
+
+'class RepairWorkerDataBase{
+'  //根据技能去筛选工人？？？
+'}
+
+class Explanation{
+    - description 情况说明
+    - source 由工人还是调度员还是其他给出
+}
+
+class Dispatch{
+  - dispatchId
+  - status
+  - time
+}
+
+class RepairLog {
+  - logId
+  - startTime
+  - endTime
+  - description
+}
+
+class FaultType {
+  - faultId
+  - faultName
+  - matchedSkill
+  - description
+}
+
+class Complaint {
+   - submitterID
+   - complaintId
+   - description 投诉内容
+   - result 投诉处理结果
+   - status 判断投诉是否完成
+}
+
+class Evaluation {
+   - CustomerId
+   - responseTimeliness 响应及时度
+   - serviceAttitudeRating 服务态度评分
+   - resultRating 对结果的满意度
+}
+
+' User <|-- RepairWorker
+' User <|-- Dispatcher
+
+Dispatcher "1" -- "1" Dispatch : assign
+Dispatcher "1" -- "1..*" RepairTask : create and responsible for
+' Dispatcher "1" -- "1..*" RepairInformation : record
+Dispatch "1" -- "1" RepairWorker :dispatch(v.)
+Dispatch "1" -- "1..*" RepairTask
+' RepairTask "1" -- "1" RepairInformation : contains
+SingleTask "1" -- "1..*" RepairLog : contains
+RepairTask "1" -- "1..*" SingleTask : contains
+' RepairTask "1" -- "1..*" RepairLog : contains
+RepairTask "1..*" -- "1..*" RepairWorker : assigned-to
+RepairTask "1" -- "1" FaultType : categorized-as
+SingleTask "1" -- "1" RepairWorker : submitted-by
+
+' RepairWorker "1" -- "1" SingleTask : do
+
+RepairTask "1" -- "1..*" Complaint : associated-with
+Evaluation "1" -- "1" RepairTask : evaluates
+Manager "1..*" -- "1..*" RepairTask : deal with
+' RepairWorker "1" -- "1" Complaint : report information
+' Dispatcher "1" -- "1" Complaint : report information
+Complaint "1" -- "1..*" Explanation 
+
+'System "1" -- "1..*" RepairTask : store
+'System "1" -- "1..*" RepairWorkerDataBase : store
+
+
+
+@enduml
+
+
+' // System需不需要，涉及到User类等
+' // 调度员在选择了故障类别后，系统可以推荐相关的维修工人？怎么建立联系
+' // repairinformmation要不要独立
+' // 投诉反馈的情况说明要不要独立

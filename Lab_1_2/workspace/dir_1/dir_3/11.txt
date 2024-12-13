@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title></title>  
+  </head>
+  <body>
+    <ul id="list">
+      <li id="li_1"></li>    
+      <li id="li_2">hewewd</li>    
+      <li id="li_3">bubc</li>    
+    </ul>
+  </body>
+</html>

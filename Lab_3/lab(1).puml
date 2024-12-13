@@ -1,0 +1,112 @@
+@startuml !
+title Domain Model of Property Repair Management System
+
+class RepairPerson {
+  - personId
+}
+
+class Skills{
+}
+
+class Schedule{
+}
+
+Skills "0..*" -- "0..*" RepairPerson : has
+Skills "0..*" -- "0..*" FaultType : caters to
+Schedule "1" -- "0..*" RepairPerson : has
+
+class Dispatcher {
+  - dispatcherId
+}
+
+class Manager{
+  - managerId
+}
+
+class Informer{
+}
+
+'class RepairInformation{
+'  - createdTime: DateTime //报修时间
+'  - description: String //故障内容
+'  - informer //上报故障的业主
+'  - faultSource //故障来源
+'}
+
+class RepairTask {
+  - status
+  - createdTime
+  - description
+  - address
+}
+
+RepairTask "0..*" -- "0..*" Informer : report
+
+
+'class RepairPersonDataBase{
+'  //根据技能去筛选工人？？？
+'}
+
+class Dispatch{
+  - status
+  - concreteTask
+}
+
+class RepairLog {
+  - submitterID
+  - logId
+  - startTime
+  - endTime
+  - description
+}
+
+class FaultType {
+  - faultId
+  - faultName
+  - description
+}
+
+class Complaint {
+  - submitterID
+  - complaintId
+  - status
+  - explanation
+}
+
+class Evaluation {
+   - rate 
+}
+
+' User <|-- RepairPerson
+' User <|-- Dispatcher
+
+Dispatcher "1" -- "1" Dispatch : assign
+Dispatcher "1" -- "1" RepairTask : responsible for
+' Dispatcher "1" -- "1..*" RepairInformation : record
+Dispatch "1" -- "1..*" RepairPerson :dispatch(v.)
+Dispatch "1" -- "1" RepairTask
+' RepairTask "1" -- "1" RepairInformation : contains
+' SingleTask "1" -- "1" RepairLog : contains
+' RepairTask "1" -- "1..*" SingleTask : contains
+RepairTask "1" -- "1..*" RepairLog : contains
+RepairTask "1..*" -- "1..*" RepairPerson : assigned-to
+RepairTask "1" -- "1" FaultType : categorized-as
+
+' RepairPerson "1" -- "1" SingleTask : do
+
+RepairTask "1" -- "1..*" Complaint : associated-with
+Evaluation "1" -- "1" RepairTask : evaluates
+Manager "1" -- "1" Complaint : deal with
+RepairPerson "1" -- "1" Complaint : report information
+Dispatcher "1" -- "1" Complaint : report information
+
+'System "1" -- "1..*" RepairTask : store
+'System "1" -- "1..*" RepairPersonDataBase : store
+
+@enduml
+
+
+' // System需不需要，涉及到User类等
+' // 调度员在选择了故障类别后，系统可以推荐相关的维修工人？怎么建立联系
+' // repairinformmation要不要独立
+' // 投诉反馈的情况说明要不要独立

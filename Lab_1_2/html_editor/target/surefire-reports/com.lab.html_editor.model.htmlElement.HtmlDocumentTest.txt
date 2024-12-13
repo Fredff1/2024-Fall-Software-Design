@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.lab.html_editor.model.htmlElement.HtmlDocumentTest
+-------------------------------------------------------------------------------
+Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s - in com.lab.html_editor.model.htmlElement.HtmlDocumentTest

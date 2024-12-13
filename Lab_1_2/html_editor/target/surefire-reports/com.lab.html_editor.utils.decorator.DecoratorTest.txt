@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.lab.html_editor.utils.decorator.DecoratorTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.255 s - in com.lab.html_editor.utils.decorator.DecoratorTest

@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+
+package "HtmlModel" {
+    [HtmlElement] --> [TreeNode] : depends on
+    [HtmlComposite] --> [HtmlElement] : depends on
+    [HtmlLeaf] --> [HtmlElement] : depends on
+    [HtmlDocument] --> [HtmlService] : depends on
+    [HtmlDocument] ..> [Util.Visitor] : uses
+    [HtmlDocument] ..> [Util.Strategy] : uses
+}
+
+package "HtmlView" {
+    
+}
+
+package "HtmlController" {
+    [HtmlController] --> [HtmlView] : depends on
+    [HtmlController] --> [HtmlModel] : depends on
+    [HtmlController] ..> [Util.observer] : uses
+}
+
+package "app" {
+    [HtmlApp] --> [HtmlController] : depends on
+    [HtmlApp] --> [CommandParser] : depends on
+}
+
+package "Service" {
+    [HtmlService] ..> [Util.factory] : uses
+    [SpellcheckService] --> [language tool] : depends on
+    [HtmlIO] --> [JsoupIO] : uses
+}
+
+package "Util"{
+    [Visitor] ..>[HtmlElement]: uses
+    [Strategy] ..>[HtmlElement]: uses
+    [factory]-->[HtmlElement] :depends on
+    [observer]
+    [command]-->[HtmlDocument]:depends on
+    [command]-->[HtmlController]:depends on
+    [command]-->[Visitor]:uses
+}
+
+@enduml

@@ -1,0 +1,60 @@
+digraph "Property Repair Management" {
+	fontsize=12 rankdir=TB ratio=fill
+	RepairRequest [label="RepairRequest
+- id: int
+- time: datetime
+- description: string
+- source: Enum[Phone, WeChat]
+- reportedBy: string
+- status: Enum[Pending, Dispatched, InProgress, Completed]
+- evaluation: string
+- feedbackTime: datetime
+- activeDispatch: Dispatch
+" shape=record]
+	Dispatch [label="Dispatch
+- id: int
+- time: datetime
+- dispatcher: string
+- worker: Worker
+- status: Enum[Active, Completed]
+- priority: int
+- failureReason: string
+" shape=record]
+	Worker [label="Worker
+- id: int
+- name: string
+- skills: List[FaultType]
+- isAvailable: bool
+- tasks: List[Dispatch]
+- activities: List[MaintenanceActivity]
+" shape=record]
+	MaintenanceActivity [label="MaintenanceActivity
+- id: int
+- startTime: datetime
+- endTime: datetime
+- content: string
+- status: Enum[Incomplete, Complete]
+- workHours: float
+" shape=record]
+	FaultType [label="FaultType
+- id: int
+- name: string
+" shape=record]
+	Complaint [label="Complaint
+- id: int
+- time: datetime
+- content: string
+- status: Enum[Open, Closed]
+- submissionTime: datetime
+- relatedWorkers: List[Worker]
+- relatedDispatchers: List[Dispatcher]
+" shape=record]
+	RepairRequest -> Dispatch [label="1..*"]
+	Dispatch -> Worker [label=1]
+	Worker -> MaintenanceActivity [label="1..*"]
+	RepairRequest -> MaintenanceActivity [label="1..*"]
+	RepairRequest -> Complaint [label="0..*"]
+	FaultType -> Worker [label="1..*"]
+	Complaint -> Worker [label="0..*"]
+	Complaint -> Dispatch [label="0..*"]
+}
