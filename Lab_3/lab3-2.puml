@@ -1,0 +1,86 @@
+@startuml !
+
+title Model
+
+class Equipment{
+    - id
+    - name
+    - equipmentType
+    - position
+    - purchaseDate
+    - expirationTime
+    - description
+}
+
+Equipment "1" -- "1"  EquipmentType: has
+Equipment "1" -- "1"  InspectionPlan: has
+Equipment "1" -- "1..*"  RepairRequest: has
+
+enum EquipmentType{
+    - type
+}
+
+class InspectionPlan{
+    - cycle
+    - inspectionType
+    - targetEquipment
+    - content
+}
+
+
+InspectionPlan "1" -- "1..*"  WorkType: has
+InspectionPlan "1" -- "1..*"  InspectionTask: has
+InspectionTask "1" -- "1"  InspectionLog: has
+InspectionTask "1" -- "1"  Inspector: has
+
+
+
+
+
+class InspectionTask{
+    - id
+    - time
+    - description
+    - delay
+}
+
+class InspectionLog{
+    - time
+    - status
+    - result
+    - description
+}
+
+class RepairRequest{
+    - time
+    - targetEquipment
+    - other related to part 1
+}
+
+class WorkType{
+
+}
+
+class Person{
+    - name
+}
+
+class Dispatcher{
+    - id
+}
+
+Dispatcher "1" -- "1..*" Inspector
+
+class Inspector{
+    - id
+    - workType
+}
+
+Dispatcher "1" -- "1..*" WorkType
+
+Dispatcher<|-- Person
+
+Inspector<|-- Person
+
+
+@enduml
