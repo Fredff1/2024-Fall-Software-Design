@@ -1,0 +1,145 @@
+@startuml !
+
+title Design Model
+
+
+
+
+class Equipment{
+    - id:int
+    + getInfo()
+    + getTaskHistory()
+    + getPlan()
+    + updateInfo()
+    + addRepairRequest()
+}
+
+class EquipmentInfo{
+    - name:Sting
+    - position:Position
+    - purchaseDate:Date
+    - expirationTime:Date
+    - description:String
+}
+
+Equipment "1" -right-- "1"  EquipmentInfo: has
+
+EquipmentInfo "1" -down-- "1"  EquipmentType: has
+
+Equipment "1" -left-- "1"  InspectionPlan: has
+Equipment "1" -down-- "1..*"  RepairRequest: has
+
+
+
+
+
+
+enum EquipmentType{
+    ELEVATOR
+    FIRE_SAFETY
+    LIGHTING
+    WATER_SUPPLY
+    OTHER
+}
+
+class InspectionPlan{
+    - cycle:Cycle
+    - content:String
+    + calculateNextInspectionDate()
+    + adjustCycle()
+}
+
+
+
+InspectionPlan "1" -- "1..*"  WorkType: has
+
+InspectionPlan "1" -left-- "1..*"  Dispatcher: has
+InspectionPlan "1" -down-- "1..*"  InspectionTask: has
+InspectionTask "1" -- "1"  InspectionLog: generate
+
+InspectionTask "1" -right-- "1..*" RepairRequest : initiate
+
+
+
+
+InspectionTask "1" -- "1" InspectionLog
+
+
+
+class InspectionTask{
+    - id:int
+    - time:Date
+    - description:String
+    - status:TaskStatus
+    - delay:Delay
+    + setDelay()
+    + generateLog()
+    + getLog()
+    + generateRepairRequest()
+    + changeStatus():void
+}
+
+class InspectionLog{
+    - time:Date
+    - description:String
+    + getResult()
+    + getTask()
+    + linkToTask()
+}
+
+class RepairRequest{
+    - time:Date
+}
+
+enum InspectionResult{
+    NORMAL
+    NEED_REPAIR
+    OTHER
+}
+
+InspectionLog "1"-right--"1" InspectionResult
+
+enum WorkType{
+    WATER_POWER
+    COMMUNICATIONS
+    FIRE_SAFETY
+    LIGHTING
+    SECURITY
+    ENVIRONMENTAL
+}
+
+class Person{
+    - name:String
+    + getInfo()
+}
+
+class Dispatcher{
+    - id:int
+    + assignTask()
+    + getInspectorRecommendation()
+}
+
+Dispatcher "1" -- "1..*" Inspector
+
+class Inspector{
+    - id:int
+    + executeTask()
+    + submitResult()
+    + getSchedule()
+    + getWorkHistory()
+}
+
+'Inspector "1" -- "1..*" WorkType'
+
+Inspector "1"-right-- "1..*" InspectionTask
+
+
+
+Inspector "1"-- "1..*" WorkType
+
+Person <|-- Dispatcher
+Inspector -left[hidden] Person
+Person <|-- Inspector
+Dispatcher -down[hidden] Person
+
+@enduml

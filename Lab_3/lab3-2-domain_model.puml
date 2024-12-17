@@ -1,0 +1,116 @@
+@startuml !
+
+title Domain Model
+
+
+class Equipment{
+    - id
+}
+
+class EquipmentInfo{
+
+    - name
+    - position
+    - purchaseDate
+    - expirationTime
+    - description
+}
+
+Equipment "1" -right-- "1"  EquipmentInfo: has
+
+EquipmentInfo "1" -down-- "1"  EquipmentType: has
+
+Equipment "1" -left-- "1"  InspectionPlan: has
+Equipment "1" -down-- "1..*"  RepairRequest: has
+
+
+
+
+
+
+enum EquipmentType{
+    - type
+}
+
+class InspectionPlan{
+    - cycle
+    - content
+}
+
+
+
+InspectionPlan "1" -- "1..*"  WorkType: has
+
+InspectionPlan "1" -left-- "1..*"  Dispatcher: manage
+InspectionPlan "1" -down-- "1..*"  InspectionTask: has
+InspectionTask "1" -- "1"  InspectionLog: generate
+
+InspectionTask "1" -right-- "1..*" RepairRequest : initiate
+
+
+
+
+
+
+
+class InspectionTask{
+    - id
+    - time
+    - description
+    - delay
+}
+
+InspectionTask "1" -- "1" InspectionLog
+
+class InspectionLog{
+    - time
+    - status
+    - description
+}
+
+enum InspectionResult{
+
+}
+
+InspectionLog "1"-right--"1" InspectionResult
+
+
+
+class RepairRequest{
+    - time
+    + linkRepairTaskSystem()
+    + registerRepairTask()
+}
+
+enum WorkType{
+
+}
+
+class Person{
+    - name
+}
+
+class Dispatcher{
+    - id
+}
+
+Dispatcher "1" -- "1..*" Inspector
+
+class Inspector{
+    - id
+}
+
+'Inspector "1" -- "1..*" WorkType'
+
+Inspector "1"-right-- "1..*" InspectionTask
+
+
+
+Inspector "1"-up-- "1..*" WorkType
+
+Person <|-- Dispatcher
+Inspector -left[hidden] Person
+Person <|-- Inspector
+Dispatcher -down[hidden] Person
+
+@enduml
