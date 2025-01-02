@@ -1,0 +1,48 @@
+@startuml !
+title part_1_update
+
+class RepairManager{
+    + createRepairTask(equipment:, source:): RepairTask
+    + linkToInspection(log: InspectionLog, repair: RepairTask)
+    + getRepairTask(equipment: Equipment): List<RepairTask>
+}
+
+enum RepairSource{
+    INSPECTION
+    RESIDENT
+    OTHER
+}
+
+class Fault {
+    - id: int
+    - detectedTime: Date
+    - description: String
+    - severity: Severity
+    - repairTask:RepairTask
+    - equipment:Equipment
+}
+
+class RepairTask{
+  - taskId
+  - status
+  - createdTime:Date
+  - description:String
+  - equipment:Equipment
+  - address
+}
+
+class Equipment{
+    同巡检模型内的Equipment
+}
+
+RepairManager "1"-right--"1..*" RepairTask
+
+Fault "1"-down--> RepairManager: reported to
+
+RepairTask "1"-right--"1" RepairSource
+
+Equipment "1" -up-> "1..*" RepairTask : has
+
+
+
+@enduml

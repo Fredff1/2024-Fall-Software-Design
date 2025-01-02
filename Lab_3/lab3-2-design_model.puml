@@ -7,34 +7,40 @@ title Design Model
 
 class Equipment{
     - id:int
-    + getInfo()
-    + getTaskHistory()
-    + getPlan()
-    + updateInfo()
-    + addRepairRequest()
-}
-
-class EquipmentInfo{
     - name:Sting
     - position:Position
     - purchaseDate:Date
     - expirationTime:Date
     - description:String
+    + getInfo()
+    + getTaskHistory()
+    + getPlan()
+    + updateInfo()
+    + addRepairRequest()
+    
 }
 
-Equipment "1" -right-- "1"  EquipmentInfo: has
 
-EquipmentInfo "1" -down-- "1"  EquipmentType: has
+
+Equipment "1" -right-- "1"  EquipmentType: has
+
 
 Equipment "1" -left-- "1"  InspectionPlan: has
-Equipment "1" -down-- "1..*"  RepairRequest: has
+
+Equipment "1" -right-- "1..*"  Fault: has
 
 
 
 
-
+'员工持有角色，而不是继承,可以不放角色模型‘
+'role-based access control'
+'删了Person就可以'
+'RepairRequest可以继承，代表发起人'
+'设备目前只能查到巡检的报修，还要能关联到上一个模型相关的报修-》如何管理'
 
 enum EquipmentType{
+    实现为运行时枚举
+    可由用户添加新类
     ELEVATOR
     FIRE_SAFETY
     LIGHTING
@@ -45,6 +51,9 @@ enum EquipmentType{
 class InspectionPlan{
     - cycle:Cycle
     - content:String
+    - delay:Delay
+    + setDelay()
+    + adjustTask()
     + calculateNextInspectionDate()
     + adjustCycle()
 }
@@ -53,16 +62,24 @@ class InspectionPlan{
 
 InspectionPlan "1" -- "1..*"  WorkType: has
 
-InspectionPlan "1" -left-- "1..*"  Dispatcher: has
+InspectionTask "1" -left-- "1..*"  Dispatcher: dispatch
 InspectionPlan "1" -down-- "1..*"  InspectionTask: has
-InspectionTask "1" -- "1"  InspectionLog: generate
-
-InspectionTask "1" -right-- "1..*" RepairRequest : initiate
 
 
+InspectionLog "1"-right--..>RepairManager: <<uses>> optional call
 
 
-InspectionTask "1" -- "1" InspectionLog
+
+
+
+class RepairManager{
+    同报修模型
+}
+
+
+
+
+InspectionTask "1" -- "0..1" InspectionLog
 
 
 
@@ -71,8 +88,6 @@ class InspectionTask{
     - time:Date
     - description:String
     - status:TaskStatus
-    - delay:Delay
-    + setDelay()
     + generateLog()
     + getLog()
     + generateRepairRequest()
@@ -84,22 +99,48 @@ class InspectionLog{
     - description:String
     + getResult()
     + getTask()
-    + linkToTask()
+    + linkToTask(task)
+    + generateRepairTask(manager,equipment, description): RepairTask
 }
 
-class RepairRequest{
-    - time:Date
+InspectionLog "1" -- "1..*"  Fault: generate
+
+Fault "1"-up--..>RepairManager: used in
+
+
+
+class Fault {
+    - id: int
+    - detectedTime: Date
+    - description: String
+    - severity: Severity
+    - repairTask:RepairTask
+    - status: FaultStatus
 }
+
+
+
+
+
+
+
+
 
 enum InspectionResult{
+    实现为运行时枚举
+    可由用户添加新类
+    包含复杂信息
+    + info: InspectionInfo
     NORMAL
     NEED_REPAIR
     OTHER
 }
 
-InspectionLog "1"-right--"1" InspectionResult
+InspectionLog "1"-left--"1" InspectionResult
 
 enum WorkType{
+    实现为运行时枚举
+    可由用户添加新类
     WATER_POWER
     COMMUNICATIONS
     FIRE_SAFETY
@@ -108,10 +149,7 @@ enum WorkType{
     ENVIRONMENTAL
 }
 
-class Person{
-    - name:String
-    + getInfo()
-}
+
 
 class Dispatcher{
     - id:int
@@ -119,10 +157,13 @@ class Dispatcher{
     + getInspectorRecommendation()
 }
 
-Dispatcher "1" -- "1..*" Inspector
+
+
 
 class Inspector{
     - id:int
+    - schedule:getSchedule
+    - workHistory
     + executeTask()
     + submitResult()
     + getSchedule()
@@ -131,15 +172,13 @@ class Inspector{
 
 'Inspector "1" -- "1..*" WorkType'
 
-Inspector "1"-right-- "1..*" InspectionTask
+InspectionTask "1"-right-- "1" Inspector
 
 
 
-Inspector "1"-- "1..*" WorkType
+Inspector "1"-left-- "1..*" WorkType
 
-Person <|-- Dispatcher
-Inspector -left[hidden] Person
-Person <|-- Inspector
-Dispatcher -down[hidden] Person
+
+
 
 @enduml
